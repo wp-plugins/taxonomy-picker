@@ -25,6 +25,8 @@ For example on my site I use it to allow users to:
 + Find all posts within the Magazine category which match "Valley of the Kings" in my "Where?" custom taxonomy which also include the word Tutankhamun
 
 
+*Plugin home:* http://www.squidoo.com/taxonomy-picker-wordpress-plugin
+
 == Installation ==
 
 Download the and activate the plugin the usual way.  The new widget will then be immediately availble to use.
