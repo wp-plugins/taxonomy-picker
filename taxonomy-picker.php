@@ -5,9 +5,9 @@
  * Description: Adds a widget to enable readers to choose custom taxonomies to build a query, combined with a search on Category, Tags or a text string.  The categories and custom to be shown, can be configured in the widget admin so that searches can be restricted to certain categories - for example to allow searching for a name only within a news category.  Searches across the intersection of multiple taxonomies are not supported in WP3.01 but should be available in WP3.1
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- *
+ * Version: 1.0
  * @copyright 2010
- * @version 0.1
+ * @version 1.0
  * @author Kate Phizackerley
  * @link 
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
