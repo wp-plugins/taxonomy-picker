@@ -11,7 +11,7 @@ Tested up to: 3.01
 Stable tag: 1.01
 Version: 1.01 
 
-Add a widget to help your readers build custom queries using drop downs of your categories and custom taxonomies
+Add a widget to help your readers build custom queries using drop-downs of your categories and custom taxonomies.
 
 == Description ==
 
