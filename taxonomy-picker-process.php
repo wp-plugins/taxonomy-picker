@@ -5,6 +5,7 @@
 
 
 function taxonomy_picker_process() {  // Build a URI form the data POSTed by the widget form
+
 	if(count($_POST)>0):
 		$post_vars = $_POST;
 		if($post_vars['kate-phizackerley'] <> 'taxonomy-picker'):	

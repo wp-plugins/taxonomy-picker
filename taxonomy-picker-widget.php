@@ -73,9 +73,10 @@ class FindHelperWidget extends WP_Widget {
 				if(2 == $counter--):
 					$css_class = "class='last'"; // Set class=last on final <li>
 				endif;
-				echo "<li $css_class><label>$taxonomy_label:</label><br/><select name='$taxonomy->name' style='width:100%;'>";
+				$tax_label = __($taxonomy_label);
+				echo "<li $css_class><label>$tax_label:</label><br/><select name='$taxonomy->name' style='width:100%;'>";
 				$css_class=''; // After home reset to '' until set to last
-				echo "<option value='$taxonomy->name=all' selected>** All **</option>";
+				echo "<option value='$taxonomy->name=all' selected>".__("** All **")."</option>";
 				foreach($terms as $term):  // Loop through terms in the taxonomy
 					if($taxonomy->name=='category'):
 						$option_name = 'cat='. $term->term_id; // Pass in a format which suits query_posts - for categories cat=id works best
@@ -107,7 +108,8 @@ class FindHelperWidget extends WP_Widget {
 						$allowed = true;
 						$option_name = $taxonomy->name.'='.$term->name;
 					endif;
-					if($allowed) echo "<option value='$option_name' >$term->name</option>";
+					$t_name = __($term->name);
+					if($allowed) echo "<option value='$option_name' >$t_name</option>";
 				endforeach;
 				echo "</select></li>";
 			endif;
