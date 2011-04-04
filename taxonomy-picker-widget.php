@@ -122,14 +122,16 @@ class FindHelperWidget extends WP_Widget {
 
 	
 	function update($new_instance, $old_instance) {
-		$new_instance['title'] = strip_tags( $new_instance['title'] );
-		$instance['category_title'] = strip_tags( $instance['category_title'] );
-		$new_instance['set_categories'] = strip_tags( $new_instance['set_categories'] );
-		$new_instance['set_pages'] = strip_tags( $new_instance['set_pages'] );
-		return $new_instance;
+		$instance = $new_instance;
+		$instance['title'] = strip_tags( $new_instance['title'] );
+		$instance['category_title'] = strip_tags( $new_instance['category_title'] );
+		$instance['set_categories'] = strip_tags( $new_instance['set_categories'] );
+		$instance['set_pages'] = strip_tags( $new_instance['set_pages'] );
+		return $instance;
 	}
 	
 	function form ($instance) {
+	
 		// Set up some defaults
 		$defaults = array( 'title' => __('Example', 'example'), 'choose_categories' => 'A', 'choose_pages' => 'A');
 		$instance = wp_parse_args( (array) $instance, $defaults ); 
@@ -138,73 +140,81 @@ class FindHelperWidget extends WP_Widget {
 	    $title_id = $this->get_field_id( 'title' );
 	    $title_name = $this->get_field_name('title');
 	    $title_value = $instance['title'];
-// Echo a Heredoc
-echo <<<INPUT_FORM_TITLE
-<p><fieldset id="taxonomy-picker-title">
-	<label for="$title_id">Title:</label>
- 	<input id="$title_id" name="$title_name" value="$title_value" style="width:100%;" /></fieldset></p><hr>
- 	<fieldset id="taxonomy-picker-taxonomoies"><h3>Taxonomies</h3><!-- Select Taxonomies -->			     
-INPUT_FORM_TITLE;
-		
+	    echo '<p>';
+	    	echo '<fieldset id="taxonomy-picker-title">';
+				echo "<label for='$title_id'>Title:</label>";
+				echo "<input id='$title_id' name='$title_name' value='$title_value' style='width:100%;' />";
+	 		echo '</fieldset>';
+	 	echo '</p> <hr>'; 
+
+		// Build taxonomy selection boxes	 	
 		$taxes = get_taxonomies('','names');
 		if(count($taxes)>0):
-			foreach($taxes as $tax):
-				$tax_stem = 'taxonomy_'.$tax;
-				$taxonomy = get_taxonomy($tax);
-				$taxonomy_label = ($taxonomy->name=='link_category') ? 'Link Categories' : $taxonomy->label;
-				$tax_id = $this->get_field_id($tax_stem);
-				$tax_name = $this->get_field_name($tax_stem);
-				$radio_checked = ($instance[$tax_stem]=='on') ? 'checked ' : '';
-				echo "<p><input id='$tax_id' class='checkbox' type='checkbox' name='$tax_name' $radio_checked />";
-				echo "&nbsp;<label for='$tax_id' title='$tax_stem'>$taxonomy_label</label></p>";
-			endforeach;
+			echo '<fieldset id="taxonomy-picker-taxonomoies"><h3>Taxonomies</h3>';
+				foreach($taxes as $tax):
+					$tax_stem = 'taxonomy_'.$tax;
+					$taxonomy = get_taxonomy($tax);
+					$taxonomy_label = ($taxonomy->name=='link_category') ? 'Link Categories' : $taxonomy->label;
+					$tax_id = $this->get_field_id($tax_stem);
+					$tax_name = $this->get_field_name($tax_stem);
+					$radio_checked = ($instance[$tax_stem]=='on') ? 'checked ' : '';
+					echo "<p>";
+						echo "<input id='$tax_id' class='checkbox' type='checkbox' name='$tax_name' $radio_checked />";
+						echo "&nbsp;<label for='$tax_id' title='$tax_stem'>$taxonomy_label</label>";
+					echo "</p>";
+				endforeach;
+			echo '</fieldset><hr>';
 		endif;
-
-		// Select Categories
 		
+		// Select Categories		
 		$title_id = $this->get_field_id( 'category_title' );
 	    $title_name = $this->get_field_name('category_title');
 	    $title_value = $instance['category_title'];
 
-		?>'</fieldset><hr><fieldset id="taxonomy-picker-categories"<p><h3>Categories</h3></p>
-		<p style='float:left;'><label for="$cat_title_id"><b>Title:</b></label></p><p style="float:right;width:75%;"><?php
-		echo "<input id='$title_id' name='$title_name' value='$title_value' style='width:90%;' />";
-		?></p><br style="clear:both;"/><label><b>Select:&nbsp;&nbsp;</b></label><?php
+		echo '<fieldset id="taxonomy-picker-categories"<p><h3>Categories</h3></p>';
+			echo '<p style="float:left;"><label for="$cat_title_id"><b>Title:</b></label></p>';
+			echo '<p style="float:right;width:75%;">';
+				echo "<input id='$title_id' name='$title_name' value='$title_value' style='width:90%;' />";
+			echo '</p>';
+			echo '<br style="clear:both;"/><label><b>Select:&nbsp;&nbsp;</b></label>';
 
-		// Build radio buttons for All, Incl , Excl for categories	
-		$radio_id = $this->get_field_id('choose_categories');
-		$radio_name = $this->get_field_name('choose_categories');
-		$radio_value = $instance['choose_categories'];
-		$radio_checked = ($instance['choose_categories']=='A')?'checked':'';
-		echo "All:&nbsp;<input type='radio' name='$radio_name' value='A' $radio_checked />&nbsp;|&nbsp;"; 
-		$radio_checked = ($instance['choose_categories']=='I')?'checked':'';
-		echo "Incl:&nbsp;<input type='radio' name='$radio_name' value='I' $radio_checked />&nbsp;|&nbsp;"; 
-		$radio_checked = ($instance['choose_categories']=='E')?'checked':'';
-		echo "Excl:&nbsp;<input type='radio' name='$radio_name' value='E' $radio_checked /><br/>"; 
+			// Build radio buttons for All, Incl , Excl for categories	
+			$radio_id = $this->get_field_id('choose_categories');
+			$radio_name = $this->get_field_name('choose_categories');
+			$radio_value = $instance['choose_categories'];
+			$radio_checked = ($instance['choose_categories']=='A')?'checked':'';
+			echo "All:&nbsp;<input type='radio' name='$radio_name' value='A' $radio_checked />&nbsp;|&nbsp;"; 
+			$radio_checked = ($instance['choose_categories']=='I')?'checked':'';
+			echo "Incl:&nbsp;<input type='radio' name='$radio_name' value='I' $radio_checked />&nbsp;|&nbsp;"; 
+			$radio_checked = ($instance['choose_categories']=='E')?'checked':'';
+			echo "Excl:&nbsp;<input type='radio' name='$radio_name' value='E' $radio_checked /><br/>"; 
+			$input_id = $this->get_field_id('set_categories');
+			$input_name = $this->get_field_name('set_categories');
+			$input_value = $instance['set_categories'];
+			echo "<input id='$input_id' name='$input_name'  value='$input_value' style='width:100%;margin-top:2px;'/>";
+			echo '<i style="font-size:75%">Enter category IDs separated by commas</i>';
+		echo '</fieldset><hr>';
 
-		$input_id = $this->get_field_id('set_categories');
-		$input_name = $this->get_field_name('set_categories');
-		$input_value = $instance['set_categories'];
-		echo "<input id='$input_id' name='$input_name'  value='$input_value' style='width:100%;margin-top:2px;'/>"
-		?> <i style="font-size:75%">Enter category IDs separated by commas</i>
-		
-		</fieldset><hr><fieldset id="taxonomy-picker-pages"><p><h3>Pages</h3></p><label><b>Select:&nbsp;&nbsp;</b></label><?php // Select Pages
-		$radio_id = $this->get_field_id('choose_pages');
-		$radio_name = $this->get_field_name('choose_pages');
-		$radio_value = $instance['choose_pages'];
-		$radio_checked = ($instance['choose_pages']=='A')?'checked':'';
-		echo "All:&nbsp;<input type='radio' name='$radio_name' value='A' $radio_checked />&nbsp;|&nbsp;"; 
-		$radio_checked = ($instance['choose_pages']=='I')?'checked':'';
-		echo "Incl:&nbsp;<input type='radio' name='$radio_name' value='I' $radio_checked />&nbsp;|&nbsp;"; 
-		$radio_checked = ($instance['choose_pages']=='E')?'checked':'';
-		echo "Excl:&nbsp;<input type='radio' name='$radio_name' value='E' $radio_checked /><br/>"; 
+		echo '<fieldset id="taxonomy-picker-pages">';
+			echo '<p><h3>Pages</h3></p><label><b>Select:&nbsp;&nbsp;</b></label>';
+			$radio_id = $this->get_field_id('choose_pages');
+			$radio_name = $this->get_field_name('choose_pages');
+			$radio_value = $instance['choose_pages'];
+			$radio_checked = ($instance['choose_pages']=='A')?'checked':'';
+			echo "All:&nbsp;<input type='radio' name='$radio_name' value='A' $radio_checked />&nbsp;|&nbsp;"; 
+			$radio_checked = ($instance['choose_pages']=='I')?'checked':'';
+			echo "Incl:&nbsp;<input type='radio' name='$radio_name' value='I' $radio_checked />&nbsp;|&nbsp;"; 
+			$radio_checked = ($instance['choose_pages']=='E')?'checked':'';
+			echo "Excl:&nbsp;<input type='radio' name='$radio_name' value='E' $radio_checked /><br/>"; 
+	
+			$input_id = $this->get_field_id('set_pages');
+			$input_name = $this->get_field_name('set_pages');
+			$input_value = $instance['set_pages'];
+			echo "<input id='$input_id' name='$input_name' value='$input_value' style='width:100%;margin-top:2px;'/>";
+			echo '<i style="font-size:75%">Enter page IDs separated by commas</i>';
+		echo '</fieldset>';
 
-		$input_id = $this->get_field_id('set_pages');
-		$input_name = $this->get_field_name('set_pages');
-		$input_value = $instance['set_pages'];
-		echo "<input id='$input_id' name='$input_name' value='$input_value' style='width:100%;margin-top:2px;'/>";
-		?> <i style="font-size:75%">Enter page IDs separated by commas</i></fieldset></form><?php 
 	}
-}
-
+	
+} // End class
 ?>
