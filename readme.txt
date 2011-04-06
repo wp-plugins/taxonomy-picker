@@ -6,10 +6,10 @@ Plugin URI: http://www.squidoo.com/taxonomy-picker-wordpress-plugin
 Tags: wp, query, taxonomy, category, widget, plugin
 Author URI: http://katephizackerley.wordpress.com
 Author: Kate Phizackerley
-Requires at least: 3.0
-Tested up to: 3.01
-Stable tag: 1.01
-Version: 1.01 
+Requires at least: 3.1
+Tested up to: 3.11
+Stable tag: 1.12
+Version: 1.12
 
 Add a widget to help your readers build custom queries using drop downs of your categories and custom taxonomies
 
@@ -37,7 +37,7 @@ Download the and activate the plugin the usual way.  The new widget will then be
 
 == Upgrade Notice ==
 
-Initial version only
+Version 3.12 is needed to fix incompatibilty with WP3.1.  (All versions are stable with WP 3.0)
 
 == Screenshots ==
 
