@@ -9,7 +9,7 @@ Author: Kate Phizackerley
 Requires at least: 3.1
 Tested up to: 3.11
 Stable tag: 1.12
-Version: 1.12
+Version: 1.3
 
 Add a widget to help your readers build custom queries using drop downs of your categories and custom taxonomies
 
@@ -37,7 +37,7 @@ Download the and activate the plugin the usual way.  The new widget will then be
 
 == Upgrade Notice ==
 
-Version 3.12 is needed to fix incompatibilty with WP3.1.  (All versions are stable with WP 3.0)
+Version 1.12 is needed to fix incompatibilty with WP3.1.  (All versions are stable with WP 3.0)
 
 == Screenshots ==
 
@@ -45,6 +45,9 @@ See  http://www.squidoo.com/taxonomy-picker-wordpress-plugin
 
 == Changelog ==
 
+1.3  Sorted multiple words in plain text search
+1.2  Fixed accents in taxonomies
+1.12 Incompatibility with WP3.1 addressed
 1.01 PHP warning removed
 
 == Frequently Asked Questions ==

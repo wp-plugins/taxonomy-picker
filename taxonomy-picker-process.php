@@ -15,14 +15,18 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 		foreach($post_vars as $item => $data):
 			if($item <> 'set_categories' and $item <> 's' and $item <> 'kate-phizackerley'): // We have a result from a combo box						
 				if(strpos($data,'=all') === false):  // Specific taxonomy picked
-					$custom_query .= ( ($custom_query) ? '&' : '' ) . str_replace(' ','-',$data);  // eg add &writer=Kate-Phizackerley
+
+//					$custom_query .= ( ($custom_query) ? '&' : '' ) . str_replace(' ','-',$data);  // eg add &writer=Kate-Phizackerley
+					$custom_query .= ( ($custom_query) ? '&' : '' ) . strtok( $data, '=' ) . '=' . sanitize_title(strtok("=")); // eg add &writer=Kate-Phizackerley
+
 				elseif($item == 'category'): // For All categories we need to restrict search to the specified in the dashbaord
 					$custom_query .= $_POST['set_categories'];  // Already prepared for use as comma delim set of cat ids before POSTing
 				endif;
 			endif;
 		endforeach;
 		if($post_vars['s'] <> ''):
-			 $custom_query = 's='.$post_vars['s'] . (($custom_query) ? '&' : ''). $custom_query;  // Add text search option into URI
+			$search_text = urlencode($post_vars['s']);
+			$custom_query = 's='. $search_text . (($custom_query) ? '&' : ''). $custom_query;  // Add text search option into URI
 		endif;
 		if($custom_query):  // We have a search string
 			$blog_url = get_bloginfo('url');

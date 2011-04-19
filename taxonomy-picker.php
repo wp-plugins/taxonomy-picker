@@ -5,7 +5,7 @@
  * Description: Adds a widget to enable readers to choose custom taxonomies to build a query, combined with a search on Category, Tags or a text string.  The categories and custom to be shown, can be configured in the widget admin so that searches can be restricted to certain categories - for example to allow searching for a name only within a news category. 
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.12
+ * Verion: 1.3
  *
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
