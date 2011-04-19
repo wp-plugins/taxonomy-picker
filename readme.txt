@@ -9,7 +9,7 @@ Author: Kate Phizackerley
 Requires at least: 3.1
 Tested up to: 3.11
 Stable tag: 1.12
-Version: 1.3
+Version: 1.4
 
 Add a widget to help your readers build custom queries using drop downs of your categories and custom taxonomies
 
