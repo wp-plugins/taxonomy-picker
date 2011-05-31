@@ -1,5 +1,6 @@
 <?php
 
+// Version: 1.5
 // Builds the Taxonomy Picker widget
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -22,7 +23,7 @@ class FindHelperWidget extends WP_Widget {
 		$this->WP_Widget( 'taxonomy_picker', __('Taxonomy Picker', 'taxonomy_picker'), $widget_ops, $control_ops );
 	}
 
-// Display the widget
+// Display the widget on the front of the site
 	function widget($args, $instance ){ 
 		
 		// Check whether to disaply on this page or not
@@ -48,13 +49,20 @@ class FindHelperWidget extends WP_Widget {
 			// No category match so allow to proceed
 		endif;
 
+		// Check whether we displaying the results of a prevous use (ie. kandie_tpicker is set)
+		$tpicker_inputs = taxonomy_picker_tpicker_array();
+		
+		// Get the configuration options from the database
+		$tpicker_options = get_option('taxonomy-picker-options');
+
+
 		// Main display section starts here - builds a form which is passed via POST
 
 		extract( $args);		
 		$title = apply_filters('widget_title', $instance['title'] );		
 		echo $before_widget;
 		if($title) echo $before_title.$title.$after_title;	
-		echo '<form method="post" action="'.$_SERVER['REQUEST_URI'].'" class="taxonomy-picker"><ul class="taxonomy-list">';
+		echo '<form method="post" action="'.$_SERVER['REQUEST_URI'].'" class="taxonomy-picker" id="taxonomy-picker"><ul class="taxonomy-list">';
 		echo "<li class='home search'><label>" . __("Search") .":</label><br/><input name='s' value='' style='width:90%;'></li>";  // Search text box
 		$counter=count($instance);  // Decrement to 2 to find last item
 		$css_class=''; // Use on first <li>
@@ -76,11 +84,14 @@ class FindHelperWidget extends WP_Widget {
 				$tax_label = __($taxonomy_label);
 				echo "<li $css_class><label>$tax_label:</label><br/><select name='$taxonomy->name' style='width:100%;'>";
 				$css_class=''; // After home reset to '' until set to last
-				echo "<option value='$taxonomy->name=all' selected>".__("** All **")."</option>";
+				
+				echo "<option value='$taxonomy->name=all'>". taxonomy_picker_all_text($tax_label) ."</option>";
+				
 				foreach($terms as $term):  // Loop through terms in the taxonomy
 					if($taxonomy->name=='category'):
 						$option_name = 'cat='. $term->term_id; // Pass in a format which suits query_posts - for categories cat=id works best
 						$cats = explode(',',$instance['set_categories']);
+						
 						if($instance['choose_categories']=='I'):  // Only allow specified categories
 							$set_categories = 'cat=' . $instance['set_categories']; // We can pass it as is ot will become the list of all categories for query_posts
 							$allowed = false;
@@ -104,20 +115,36 @@ class FindHelperWidget extends WP_Widget {
 							$set_categories = '';		
 							$allowed=true; // All categories allowed				
 						endif;
+						
 					else:
 						$allowed = true;
-						$option_name = $taxonomy->name.'='.$term->name;
+						$option_name = $taxonomy->name.'='.$term->slug;
 					endif;
 					$t_name = __($term->name);
-					if($allowed) echo "<option value='$option_name' >$t_name</option>";
+					$selected = ($tpicker_inputs[$taxonomy->name] == $term->slug) ? 'selected="selected"' : '';
+					// echo $term->slug . ' : ' . $tpicker_inputs[$taxonomy->name]; - Don't see why this is needed?
+					if($tpicker_options['show-count'] and $allowed): 
+						$post_count = taxonomy_picker_count_posts($taxonomy->name, $term->name);
+						if($post_count):
+							echo "<option value='$option_name' $selected>$t_name ({$post_count})</option>";
+						endif;
+					elseif($allowed):
+						 echo "<option value='$option_name' $selected>$t_name</option>";
+					endif;
 				endforeach;
 				echo "</select></li>";
 			endif;
 		endforeach;
-		echo "</ul><input type='hidden' name='set_categories' value='$set_categories' />";
-		echo "</ul><input type='hidden' name='kate-phizackerley' value='taxonomy-picker' />";
-		echo '<p style="text-align:center;margin-top:8px;"><input type="submit" value="Search"/></p></form>';
-		echo $after_widget;
+		echo "<input type='hidden' name='set_categories' value='$set_categories' />";
+		echo "<input type='hidden' name='kate-phizackerley' value='taxonomy-picker' />";
+		echo '<li style="height:8px;"></li></ul><p style="text-align:center;margin:0 auto;">';
+		if($tpicker_options['remember']):
+			// echo "<p onclick='document.getElementById(\"taxonomy-picker\").reset()';>Clear</p>";  // Sort out in v1.6
+		else:
+			echo '<input type="reset" value="Reset" style="margin-right:10%;" />';
+		endif;
+		echo '<input type="submit" value="Search"/></p></form>';
+		echo $after_widget;	
 	}
 
 	
