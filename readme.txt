@@ -9,7 +9,7 @@ Author: Kate Phizackerley
 Requires at least: 3.1
 Tested up to: 3.11
 Stable tag: trunk
-Version: 1.5
+Version: 1.5.1
 
 Add a widget to help your readers build custom queries using drop downs of your categories and custom taxonomies
 
