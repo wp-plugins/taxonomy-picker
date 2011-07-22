@@ -85,7 +85,9 @@ class FindHelperWidget extends WP_Widget {
 				echo "<li $css_class><label>$tax_label:</label><br/><select name='$taxonomy->name' style='width:100%;'>";
 				$css_class=''; // After home reset to '' until set to last
 				
-				echo "<option value='$taxonomy->name=all'>". taxonomy_picker_all_text($tax_label) ."</option>";
+				if( taxonomy_picker_all_text($tax_label) <> 'N/A' ):
+					echo "<option value='$taxonomy->name=all'>". taxonomy_picker_all_text($tax_label) ."</option>";
+				endif;
 				
 				foreach($terms as $term):  // Loop through terms in the taxonomy
 					if($taxonomy->name=='category'):

@@ -9,7 +9,7 @@ Author: Kate Phizackerley
 Requires at least: 3.1
 Tested up to: 3.11
 Stable tag: trunk
-Version: 1.5.2
+Version: 1.7
 
 Add a widget to help your readers build custom queries using drop downs of your categories and custom taxonomies
 
@@ -17,7 +17,7 @@ Add a widget to help your readers build custom queries using drop downs of your 
 
 Taxonomy Picker is a widget which you can include in your sidebar to help visitors build complex queries using categories and your custom taxonomies by chosing terms from drop down boxes.  The widget also includes a text search making it easy to search for text only within certain categories or taxonomies.
 
-Results will be displayed using your theme's standard search form so the results need no additonal styling.
+Results will be displayed using your theme's standard search form so the results need no additonal styling - but your permalinks must handle standard WordPress queries in the URL and some prettylink settings may be incompatible.
 
 For example on my site I use it to allow users to:
 
@@ -37,6 +37,13 @@ Download the and activate the plugin the usual way.  The new widget will then be
 
 == Upgrade Notice ==
 
+= 1.7 = 
+
+Override on the ** all ** option for international users
+
+= 1.6 =
+
+Technical changes
 
 = 1.5 =
 

@@ -38,6 +38,7 @@ function kandie_trace_handler($errno, $errstr, $errfile, $errline ) {
 }
 
 function kandie_error_trace_handler($errno, $errstr, $errfile, $errline, $trace = false ) {
+
 	if(!(error_reporting() & $errno)) return;  // This error code is not included in error_reporting
 
 	$tidy_errfile = basename( dirname ( $errfile ) ) . '/'. basename( $errfile ); // Just the nice trailing bit!

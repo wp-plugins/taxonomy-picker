@@ -1,11 +1,13 @@
 <?php
-
 /* Plugin Name: Taxonomy Picker
  * Plugin URI: http://www.squidoo.com/taxonomy-picker-wordpress-plugin
- * Description: Adds a widget to enable readers to choose custom taxonomies to build a query, combined with a search on Category, Tags or a text string.  The categories and custom to be shown, can be configured in the widget admin so that searches can be restricted to certain categories - for example to allow searching for a name only within a news category. 
+ * Description: Help visitors build complex queries using categories and your custom taxonomies by chosing terms from drop down boxes.  The widget also includes a text search making it easy to search for text only within certain categories or taxonomies.
+
+Results will be displayed using your theme's standard search form so the results need no additonal styling - but your permalinks must handle standard WordPress queries in the URL and some prettylink settings may be incompatible.
+
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.5.2
+ * Version: 1.7
  *
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
@@ -19,7 +21,7 @@
 /** Defintitions & Kandie Library **
 ************************************/
 if( !defined('TPICKER_DIR') ) define('TPICKER_DIR', trailingslashit(dirname(__FILE__)) );
-if( !function_exists('kandie_debug_status') ) require_once (dirname(__FILE__).'/kandie-library/kandie-foundation.php');  // Add Kandie debug & versioning support
+if( !function_exists('kandie_debug_status') ) require_once (TPICKER_DIR.'kandie-library/kandie-foundation.php');  // Add Kandie debug & versioning support
 
 /** Widget **
 *************/
@@ -40,7 +42,7 @@ if(!is_admin()): //only on the front of the blog
 
 else:
 	require_once( kandie_include_best_library('kandie-admin-menu.php') ); // Kandie admin menu extensions - include most recent in any plugin
-	include_once(TPICKER_DIR.'taxonomy-picker-admin.php'); // Admin panel extensions for Taxonomy Picker
+	require_once(TPICKER_DIR.'taxonomy-picker-admin.php'); // Admin panel extensions for Taxonomy Picker
 	register_activation_hook(__FILE__, 'taxonomy_picker_default');  // Plugin activation
 endif;
 
@@ -49,7 +51,7 @@ endif;
 
 function taxonomy_picker_default() { /* Main plugin activation function  - doubles as restore defaults */
 
-	$default = array('remember' => 1, 'all-format' => '** All **', 'miss-url' => home_url() );
+	$default = array('remember' => 'on', 'auto-help' => 'on', 'all-format' => '** All **', 'miss-url' => home_url() );
 	add_option( 'taxonomy-picker-options', $default, '', true);  // Add options
 }
 

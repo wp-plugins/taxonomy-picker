@@ -1,7 +1,7 @@
 <?php
 
 // Tidy up the POST output of the Taxonomy Widget form to pass to the blog homepage via URI to drive normal searching behaviour
-// Version 1.1
+// Version 1.6
 
 function taxonomy_picker_process() {  // Build a URI form the data POSTed by the widget form
 
@@ -11,7 +11,6 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 			return; // POSTED data wasn't for Taxonomy Picker
 		endif;
 		$custom_query=''; 
-		$tpoptions = get_option('taxonomy-picker-options');
 		foreach($post_vars as $item => $data):
 		
 			$clean_data = taxonomy_picker_decode($data);  // Sanitise inputs

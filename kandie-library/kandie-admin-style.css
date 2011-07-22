@@ -1,8 +1,15 @@
 /* Kandie Girls stylesheet for admin area */
 
 /* 
-Version: 2.1
+Version: 2.2.1
 */
+
+#adminmenu ~ div .kandie td {vertical-align:top;}
+
+
+.kandie-help-text dl {margin-top:1em;}
+.kandie-help-text dt {font-weight:bold;}
+.kandie-help-text dd {margin-left:2em;}
 
 #kandie-inventory td {padding: 0 6px 12px;}
 #kandie-inventory thead {font-weight:bold;}
