@@ -129,9 +129,6 @@ function kandie_create_tpicker_menu(){
 	?>
 	<div class="wrap">
 	
-		<?php $options = get_option('taxonomy-picker-options'); ?>
-		<?php var_dump($options); ?>
-
 	
 		<div class="icon32" id="icon-options-general"><br></div>
 		<h2>Taxonomy Picker from Kandie Girls (v<?php echo $taxonomy_plugin['Version']; ?>)</h2>
