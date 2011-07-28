@@ -9,7 +9,7 @@ Author: Kate Phizackerley
 Requires at least: 3.1
 Tested up to: 3.2.1
 Stable tag: trunk
-Version: 1.7.2
+Version: 1.7.3
 
 Add a widget to help your readers build custom queries using drop downs of your categories and custom taxonomies
 
@@ -36,6 +36,10 @@ Download the and activate the plugin the usual way.  The new widget will then be
 
 
 == Upgrade Notice ==
+
+= 1.7.3=
+
+Add option to change text for "Search"
 
 = 1.7.2 =
 

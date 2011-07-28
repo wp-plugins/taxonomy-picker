@@ -65,8 +65,8 @@ function taxonomy_picker_decode($input) {
 
 function taxonomy_picker_dencode( $input, $direction = 'decode') {
 
-	$enq_bits = explode(',', '!eq!,!and!'); // Encoded text
-	$plain_bits = explode(',','=,&'); // Plain text
+	$enq_bits = explode(   '!eq!', '!and!'); // Encoded text
+	$plain_bits = explode( '='   , '&'    ); // Plain text
 	if( strtolower($direction)  == 'encode') return htmlspecialchars( str_replace( $plain_bits, $enq_bits, $input ) );
 	return str_replace( $enq_bits, $plain_bits,  htmlspecialchars_decode( $input ) );
 }

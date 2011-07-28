@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.5
+// Version: 1.5.1
 // Builds the Taxonomy Picker widget
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -63,7 +63,8 @@ class FindHelperWidget extends WP_Widget {
 		echo $before_widget;
 		if($title) echo $before_title.$title.$after_title;	
 		echo '<form method="post" action="'.$_SERVER['REQUEST_URI'].'" class="taxonomy-picker" id="taxonomy-picker"><ul class="taxonomy-list">';
-		echo "<li class='home search'><label>" . __("Search") .":</label><br/><input name='s' value='' style='width:90%;'></li>";  // Search text box
+		echo "<li class='home search'><label>" . __("Search") .
+					":</label><br/><input name='s' value='' type='text' style='width:90%;' onblur='this.value=removeSpaces(this.value);'></li>";  // Search text box
 		$counter=count($instance);  // Decrement to 2 to find last item
 		$css_class=''; // Use on first <li>
 		$instance['set_categories'] = str_replace(' ','',$instance['set_categories']);  // Remove any excess spaces
@@ -141,11 +142,15 @@ class FindHelperWidget extends WP_Widget {
 		echo "<input type='hidden' name='kate-phizackerley' value='taxonomy-picker' />";
 		echo '<li style="height:8px;"></li></ul><p style="text-align:center;margin:0 auto;">';
 		if($tpicker_options['remember']):
-			// echo "<p onclick='document.getElementById(\"taxonomy-picker\").reset()';>Clear</p>";  // Sort out in v1.6
+			// echo "<p onclick='document.getElementById(\"taxonomy-picker\").reset()';>Clear</p>";  // Sort out in v1.8
 		else:
 			echo '<input type="reset" value="Reset" style="margin-right:10%;" />';
 		endif;
-		echo '<input type="submit" value="Search"/></p></form>';
+		
+		$search_text = ($tpicker_options['search-text']) ? $tpicker_options['search-text'] : __('Search');
+		
+		echo "<input type='submit' value='$search_text' /></p></form>";
+		echo "<script language='javascript' type='text/javascript'>function removeSpaces(string){return string.split(' ').join('%20');}</script>";
 		echo $after_widget;	
 	}
 

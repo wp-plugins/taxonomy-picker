@@ -1,6 +1,7 @@
 <?php
 
 // PHP for the Taxonomy Picker Admin menu
+// Version: 1.3
 
 add_action( 'admin_menu', 'kandie_tpicker_menu_initialisation', 20); // Kandie Menu added as 10
 add_action( 'admin_init', 'taxonomy_picker_admin_init', 20 ); 
@@ -50,6 +51,10 @@ function kandie_tpicker_menu_initialisation() {
 	$help_text .= "<dd>Generally leave blank but you may optionally enter your own text for the ** all ** option.  This will be used if set.  Use the text you want.  Identify the name of the taxonomy by using {name} or {name}s at the END of the text</dd>";
 
 
+	$help_text .= "<dl><dt>Alternative search text (optional)<dt>";
+	$help_text .= "<dd>The form will be presented with a Search button (possibly translated).  If you wish to change this text, enter your alternative here</dd>";
+
+
 	$help_text .= "<dl><dt>Show item count<dt>";
 	$help_text .= "<dd>Turn on if you wish to show item counts in the drop downs.  These are the total count and don't update on drill down.</dd>";
 	
@@ -80,6 +85,8 @@ function taxonomy_picker_admin_init() {
 
 	add_settings_field('all-override','Override text for ** all ** (optional)', 'taxonomy_picker_tpfn2', "tpicker-processing-sec","tpicker-processing");				
 
+	add_settings_field('search-text','Alternative text for "search" (optional)', 'taxonomy_picker_tpfn3', "tpicker-processing-sec","tpicker-processing");				
+
 	add_settings_field( "show-count", 'Show item count', 
 				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','show-count');"), "tpicker-processing-sec", "tpicker-processing");
 
@@ -102,6 +109,7 @@ function tpicker_nothing(){
 
 function taxonomy_picker_tpfn() {kandie_admin_textbox( 'taxonomy-picker-options', 'miss-url', 40); }
 function taxonomy_picker_tpfn2() {kandie_admin_textbox( 'taxonomy-picker-options', 'all-override', 20); }
+function taxonomy_picker_tpfn3() {kandie_admin_textbox( 'taxonomy-picker-options', 'search-text', 20); }
 
 function taxonomy_picker_options_validate($input) {
 	

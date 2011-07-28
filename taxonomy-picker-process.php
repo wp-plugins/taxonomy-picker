@@ -1,10 +1,11 @@
 <?php
 
-// Taxonomy Picker Redirect
 // Tidy up the POST output of the Taxonomy Widget form to pass to the blog homepage via URI to drive normal searching behaviour
-// Version: 1.7.2
+// Version: 1.7.3
 
 function taxonomy_picker_process() {  // Build a URI form the data POSTed by the widget form
+
+	if( !function_exists('taxonomy_picker_decode') ) require_once trailingslashit( dirname(__FILE__) ) . 'taxonomy-picker-library.php'; // Ensure libray is available
 
 	if(count($_POST)>0):
 		$post_vars = $_POST;

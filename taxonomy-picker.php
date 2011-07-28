@@ -7,7 +7,7 @@ Results will be displayed using your theme's standard search form so the results
 
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.7.2
+ * Version: 1.7.3
  *
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
@@ -38,7 +38,7 @@ if(!is_admin()): //only on the front of the blog
 
 /*	Defer shortcode implementation to v1.6	
 	require_once(TPICKER_DIR.'/taxonomy-picker-shortcode.php');  // Add shortcode equivalent
-*/	
+*/
 
 else:
 	require_once( kandie_include_best_library('kandie-admin-menu.php') ); // Kandie admin menu extensions - include most recent in any plugin
