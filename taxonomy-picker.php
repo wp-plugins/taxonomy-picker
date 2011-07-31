@@ -7,7 +7,7 @@ Results will be displayed using your theme's standard search form so the results
 
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.7.3
+ * Version: 1.8
  *
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
@@ -25,8 +25,9 @@ if( !function_exists('kandie_debug_status') ) require_once (TPICKER_DIR.'kandie-
 
 /** Widget **
 *************/
-include_once(TPICKER_DIR.'taxonomy-picker-library.php');  // Add functions common to all aspects
-include_once(TPICKER_DIR.'taxonomy-picker-widget.php');  // Build and display the widget
+require_once(TPICKER_DIR.'taxonomy-picker-library.php');  // Add functions common to all aspects
+require_once(TPICKER_DIR.'taxonomy-picker-widget.php');  // Build and display the widget
+if( array_key_exists('taxonomies', get_option('taxonomy-picker-options') ) ) include_once(TPICKER_DIR.'taxonomy-picker-taxonomies.php');  // Add pre-built taxonomies
 
 /** Remainder **
 *******************/

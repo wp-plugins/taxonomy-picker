@@ -64,6 +64,12 @@ function kandie_tpicker_menu_initialisation() {
 	$help_text .= "<dl><dt>Redirect to URL on null search<dt>";
 	$help_text .= "<dd>If the user selects ** All ** (or equivalent) for all taxonomies, output will be redirected to this URL.  Point it to the page which shows all content or your front page etc.  Enter the full URL e.g. http://www.glyphs.info</dd>";
 	
+	$help_text .= "<dl><dt>Add pre-pack taxonomy support<dt>";
+	$help_text .= "<dd>Adds additional admin screen which has several pre-packed taxonomies you can use</dd>";
+		
+	$help_text .= "<dl><dt>List punctuation<dt>";
+	$help_text .= "<dd>The character to use after taxonomy names when the widget is displayed</dd>";
+
 	$help_text .= "</dl><br/></div>";
 	
 	// Auto open the Help Text
@@ -98,6 +104,13 @@ function taxonomy_picker_admin_init() {
 
 	add_settings_section( "tpicker-housekeeping", 'Housekeeping Options', 'tpicker_nothing', "tpicker-housekeeping-sec" );
 
+	add_settings_field( "taxonomies", 'Add pre-pack taxonomy support?', 
+				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','taxonomies');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
+
+	$fn_txt = "kandie_admin_combobox('taxonomy-picker-options','punctuation',array(' ',':','?','-'));";
+	add_settings_field( "punctuation", 'List punctuation?', create_function('',$fn_txt), "tpicker-housekeeping-sec", "tpicker-housekeeping");
+
+
 	add_settings_field( "remember", 'Auto show help?', 
 				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','auto-help');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
 
@@ -118,6 +131,7 @@ function taxonomy_picker_options_validate($input) {
 	
 	$newinput['miss-url'] = esc_url( $input['miss-url'] ); // Sanitize URL
 	$newinput['all-override'] = strip_tags( $input['all-override'] ); // Sanitize URL
+	$newinput['search-text'] = strip_tags( $input['search-text'] ); // Sanitize URL
 
 	// Save the current version of the plugin in our options so that we can test for updates
 	$kandie_plugins = get_kandie_plugins();

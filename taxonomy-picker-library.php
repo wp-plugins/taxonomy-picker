@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget
- * Version: 1.3
+ * Version: 1.3.1
  */
 
 /* Standardise function for accessing $_GET variables
@@ -19,12 +19,17 @@ function taxonomy_picker_option_set($get_var) {
  */
 
 function taxonomy_picker_tpicker_array() {
-	$input = explode( '&', taxonomy_picker_dencode( $_GET['kandie_tpicker'], 'decode' ) );
-	foreach( $input as $data):
-		$key = strtok($data, '=');
-		$result[$key] = strtok('='); 
-	endforeach;
-	return $result;
+	$tpicker_get = taxonomy_picker_dencode( $_GET['kandie_tpicker'], 'decode' );
+	if( $tpicker_get ):
+		$input = explode( '&', $tpicker_get );
+		foreach( $input as $data):
+			$key = strtok($data, '=');
+			$result[$key] = strtok('='); 
+		endforeach;
+		return $result;
+	else:
+		return NULL;
+	endif;
 }
 
 function taxonomy_picker_count_posts($tax_name, $term_slug) {
@@ -96,67 +101,41 @@ function taxonomy_picker_all_text( $tax_name ) {
 	return $all_text;
 }
 
-class taonomy_picker_form {
+/*	Pre-process the $instance to consolidate taxonomy info in $instance['taxonomies']
+ *
+ * 	@param	$instance	Array		Array instance of taxonomy picker widget
+ *
+ *	@return String 					Update version of the instance
+ */
+
+
+function taxonomy_picker_taxonomies_array( $instance ) {
+	// Pack up the taxonomy stuff as a single array
+	foreach($instance as $key => $data_item):  // Loop through chosen list of taxonomies (by string detection on all items in the array)
+		if( (strpos($key,'taxonomy_') === 0) ):  // Will only pick up shown taxonomies
+			$taxonomy_name = substr($key,9); 
+			$taxonomy_value = $instance[ 'fix_' . $taxonomy_name ];
+			$taxonomy_orderby = $instance[ 'orderby_' . $taxonomy_name ];
+			$taxonomy_sort = $instance[ 'sort_' . $taxonomy_name ];
 	
-	private $taxonomies; // The taxonomies to show - array [name of taxonomy] => Description text
-	private $terms;	// Array of terms [name of taxonomy] => Array of term?? 
-	private $options; // Taxonomy Picker Options in the database
+			// Add the taxonomy to our array
+			$instance['taxonomies'][$taxonomy_name] = 
+				Array( 'name' => $taxonomy_name, 'value' => $taxonomy_value, 'hidden' => '', 'orderby' => $taxonomy_orderby, 'sort' => $taxonomy_sort); 
 	
-	/**
-	 * Constructor
-	 *
-	 * @param $tax_n_terms	Mixed	String: command separated list of taxonomy names, optionally with terms in brackets, 
-	 										restricted to one term with =, or description with : e.g. 'color(red,blue),size=large,weight:Product Weight'
-	 *								Array: same as an array of parts e.g  color=Red Items(dark red,light red) or size[0] or product[cars]
-	 */
-	 							
-	function __construct( $tax_n_terms) {
-		
-		if( is_string($tax_n_terms) ) $tax_n_terms = explode(',', $tax_n_terms);
-		self::$options = get_option('taxonomy-picker-options');
-		$hide_empty = (self::$options['hide-empty'] == 'on') ? 1 : 0;
-		
-		
-		foreach( $tax_n_terms as $t):
-			
-			$i = strpos( $t,'(');
-			if($i): // Restrict terms for this taxonomy
-				$terms = str_replace( ')', '', substr($t, $i+1) );
-				$t = substr( $t, 0, $i);
-			else:
-				$terms = '';
+		elseif( (strpos($key,'fix_') === 0) ):
+			$taxonomy_name = substr($key,4); 
+			$taxonomy_value = $data_item;
+			// Store in a temporary array
+			if( $taxonomy_value <> ($taxonomy_name . '=all' ) ):
+				$fixes[$taxonomy_name] = Array( 'name' => $taxonomy_name, 'value' => $taxonomy_value, 'hidden' => ' hidden' );
 			endif;
-			
-			$i = strpos( $t,'=');
-			if($i): // Restrict terms for this taxonomy
-				$desc = trim( substr($t, $i+1) );
-				$t = trim( substr( $t, 0, $i) );
-			else:
-				$desc = trim( $t );
-			endif;
-
-			$i = strpos( $t,'[');
-			if($i): // Restrict terms for this taxonomy
-				$origin = str_replace( ']', '', substr($t, $i+1) );
-				$name = substr( $t, 0, $i);
-			else:
-				$origin = '';
-				$name = $t;
-			endif;
-
-
-			if( taxonomy_exists($name) ): 
-				$args= array('orderby' => 'name', 'hide_empty' => $hide_empty );
-				if( $origin <> '' ) $arg['parent'] = $origin;
-				$all_terms = get_terms($name, $args);
-				if($terms) $all_terms = array_intersect( $all_terms, explode(',', $terms) ); // Only terms which are specified and exist
-				self::$taxonomies[$name] = $desc;
-				self::$terms[$name] = $all_terms;
-			endif;
-			
-		endforeach;
-		
-	}
+		endif;
+	endforeach;
+	
+	// Add in any fixes which aren't shown
+	foreach($fixes as $fix) {if( empty($instance['taxonomies'][$fix['name']]) ) { $instance['taxonomies'][$fix['name']] = $fix; } }
+	
+	return $instance;
 }
 
 ?>
