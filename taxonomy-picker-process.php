@@ -1,7 +1,7 @@
 <?php
 
 // Tidy up the POST output of the Taxonomy Widget form to pass to the blog homepage via URI to drive normal searching behaviour
-// Version: 1.7.3
+// Version: 1.8
 
 function taxonomy_picker_process() {  // Build a URI form the data POSTed by the widget form
 
@@ -29,7 +29,7 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 			endif;
 		endforeach;
 		if($post_vars['s'] <> ''):
-			$search_text = taxonomy_picker_decode( $post_vars['s'] );
+			$search_text = urlencode( $post_vars['s'] );
 			$custom_query = 's='. $search_text . (($custom_query) ? '&' : ''). $custom_query;  // Add text search option into URI
 		endif;
 		

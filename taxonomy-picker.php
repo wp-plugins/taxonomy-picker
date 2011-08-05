@@ -7,7 +7,7 @@ Results will be displayed using your theme's standard search form so the results
 
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.8
+ * Version: 1.9
  *
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
@@ -22,6 +22,24 @@ Results will be displayed using your theme's standard search form so the results
 ************************************/
 if( !defined('TPICKER_DIR') ) define('TPICKER_DIR', trailingslashit(dirname(__FILE__)) );
 if( !function_exists('kandie_debug_status') ) require_once (TPICKER_DIR.'kandie-library/kandie-foundation.php');  // Add Kandie debug & versioning support
+add_action( 'init', 'taxonomy_picker_enqueue' );  // Enque the stylesheet
+
+function taxonomy_picker_enqueue() {
+	$options = get_option('taxonomy-picker-options');
+	if( $options['no-stylesheet'] ) return; // Exit if no stylesheet is wanted.
+
+	//Enqueue taxonomy-picker.css from main theme folder if it exists, otherwise from plugin folder
+	if(  file_exists( trailingslashit( get_stylesheet_directory() ) . 'taxonomy-picker.css'  ) ): //Test theme
+		$last_modified = date( 'ymdHi', filemtime( trailingslashit( get_stylesheet_directory() ) . 'taxonomy-picker.css' ) );
+	    wp_register_style("tpicker", trailingslashit( get_stylesheet_directory_uri() ) . "taxonomy-picker.css", array(), $last_modified );
+	else:
+		$last_modified = date( 'ymdHi', filemtime( TPICKER_DIR . "taxonomy-picker.css" ) );
+	    wp_register_style("tpicker", trailingslashit( plugins_url('',__FILE__) ) . "taxonomy-picker.css", array(), $last_modified );
+	endif;
+    wp_enqueue_style( "tpicker");
+    
+    return;
+}
 
 /** Widget **
 *************/
@@ -36,6 +54,8 @@ if(!is_admin()): //only on the front of the blog
 
 	require_once(TPICKER_DIR.'taxonomy-picker-process.php');  // Process any previous use of the widget
 	add_action('init', 'taxonomy_picker_process', 1);  // Hook in our form handler
+	// add_action('init', create_function('' , "wp_enqueue_script('jquery');"), 1); // Activate JQuery
+
 
 /*	Defer shortcode implementation to v1.6	
 	require_once(TPICKER_DIR.'/taxonomy-picker-shortcode.php');  // Add shortcode equivalent
@@ -46,6 +66,7 @@ else:
 	require_once(TPICKER_DIR.'taxonomy-picker-admin.php'); // Admin panel extensions for Taxonomy Picker
 	register_activation_hook(__FILE__, 'taxonomy_picker_default');  // Plugin activation
 endif;
+
 
 /** Activation and Deactivation **
 **********************************/

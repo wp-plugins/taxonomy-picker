@@ -25,9 +25,10 @@ class FindHelperWidget extends WP_Widget {
 
 // Display the widget on the front of the site
 	function widget($args, $instance ){ 
-		
+
 		// Check whether to disaply on this page or not
 		global $post;
+		
 		$pgs = explode(',',$instance['set_pages']);	
 		if($instance['choose_pages']=='I'):  // Only allow specified pages
 			$allowed = false;
@@ -49,136 +50,7 @@ class FindHelperWidget extends WP_Widget {
 			// No category match so allow to proceed
 		endif;
 
-		// Check whether we displaying the results of a prevous use (ie. kandie_tpicker is set)
-		$tpicker_inputs = taxonomy_picker_tpicker_array();
-		
-		// Get the configuration options from the database
-		$tpicker_options = get_option('taxonomy-picker-options');
-
-		// Upgrade defence for v1.8 - won't be needed long term.  If taxonomies haven't been set, process the instance
-		iF( empty($instance['taxonomies']) )  { $instance = taxonomy_picker_taxonomies_array( $instance ); } // Pre-process the instance for efficiency
-
-		// Main display section starts here - builds a form which is passed via POST
-
-		extract( $args);		
-		$title = apply_filters('widget_title', $instance['title'] );		
-		echo $before_widget;
-		if($title) echo $before_title.$title.$after_title;	
-		echo '<form method="post" action="'.$_SERVER['REQUEST_URI'].'" class="taxonomy-picker" id="taxonomy-picker"><ul class="taxonomy-list">';
-		
-		if( !$instance['hidesearch'] ):
-			$jfns = " onblur='this.value=removeSpaces(this.value);' onfocus='this.value=restoreSpaces(this.value);' ";
-			$search_text = ($tpicker_options['search-text']) ? $tpicker_options['search-text'] : __('Search');
-			echo "<li class='home search first'><label>$search_text:</label><br/><input name='s' value='' type='text' style='width:90%;' $jfns></li>";  // Search text box
-			$css_class="";
-		else:
-			$css_class="class='first home'";
-		endif;
-		
-
-		
-		foreach($instance['taxonomies'] as $taxonomy_name => $data_item):  // Loop through chosen list of taxonomies 
-			$taxonomy = get_taxonomy( $taxonomy_name ); // Get the taxonomy object
-			$tax_label = __( ( $taxonomy_name == 'category' ) ? $instance['category_title'] : $taxonomy->label ) . $tpicker_options['punctuation']; 
-			$taxies[$tax_label] = $data_item;
-		endforeach;
-		ksort( $taxies ); //Put taxonomies into alpha label order
-		
-		foreach($taxies as $tax_label => $data_item):  // Loop through chosen list of taxonomies (by string detection on all items in the array)
-			$taxonomy_name = $data_item['name'];
-			$taxonomy = get_taxonomy( $taxonomy_name ); // Get the taxonomy object
-			$terms = get_terms($taxonomy_name, array( 'orderby' => $data_item['orderby'], 'order' => strtoupper($data_item['sort']) ));
-
-			if( $data_item['hidden'] ):
-				echo "<input type='hidden' name='$taxonomy_name' value='" . $data_item['value'] . "' />";
-					
-			elseif( taxonomy_picker_all_text($tax_label) <> 'N/A' ): 
-				
-				echo "<li $css_class><label>$tax_label</label><br/><select name='$taxonomy_name' style='width:100%;'>"; 
-				
-				echo "<option value='$taxonomy_name=all'>". taxonomy_picker_all_text($tax_label) ."</option>";
-				$css_class=''; // After home reset to ''
-			
-				foreach($terms as $term):  // Loop through terms in the taxonomy
-	
-					// ** Categories only ** //
-					if( $taxonomy_name == 'category' ):
-					
-						$option_name = 'cat='. $term->term_id; // Pass in a format which suits query_posts - for categories cat=id works best
-						$cats = explode(',',$instance['set_categories']);
-						
-						if($instance['choose_categories']=='I'):  // Only allow specified categories
-							$set_categories = 'cat=' . $instance['set_categories']; // We can pass it as is because it will become the list of all categories for query_posts
-							$allowed = false;
-							foreach($cats as $cat):  // Test against each of our permitted categories
-								if($cat == $term->term_id): // Category matches so allowed
-									$allowed = true;
-									break;
-								endif;
-							endforeach;
-						elseif($instance['choose_categories']=='E'): // Reject specified categories
-							$set_categories = 'cat=-'.str_replace(',',',-',$instance['set_categories']); // Prefix each cat id with - to exclude it
-							$allowed = true;
-							foreach($cats as $cat):
-								if($cat == $term->term_id): // Category matches so disallowed - break out of loop
-									$allowed = false;
-									break;
-								endif;
-							endforeach;							
-							// No category match so allow to proceed
-						else: // all - no display testing needed but we need to set $set_categories;
-							$set_categories = '';		
-							$allowed=true; // All categories allowed				
-						endif;
-					
-					// ** Other Taxonomies ** //	
-					else:
-						$allowed = true;
-						$option_name = $taxonomy_name.'='.$term->slug;
-					endif;
-										
-					$t_name = __($term->name);
-					
-					$selected = '';
-					if( empty($tpicker_inputs) ): 
-						$selected = ($data_item['value'] == ($taxonomy_name . '=' . $term->slug) ) ? 'selected="selected"' : '';
-					else:
-						$selected = ($tpicker_inputs[$taxonomy_name] == $term->slug) ? 'selected="selected"' : '';
-					endif;
-					
-					
-					if($tpicker_options['show-count'] and $allowed): 
-						$post_count = taxonomy_picker_count_posts($taxonomy_name, $term->name);
-						if($post_count):
-							echo "<option value='$option_name' $selected>$t_name ({$post_count})</option>";
-						endif;
-					elseif($allowed):
-						 echo "<option value='$option_name' $selected>$t_name</option>";
-					endif;
-				endforeach;
-	
-				echo "</select></li>";
-				
-			endif; // Hidden?
-			
-		
-		endforeach;
-		unset($taxies);
-		
-		echo "<input type='hidden' name='set_categories' value='$set_categories' />";
-		echo "<input type='hidden' name='kate-phizackerley' value='taxonomy-picker' />";
-		echo '<li style="height:8px;" class="last"></li></ul><p style="text-align:center;margin:0 auto;">';
-		
-		if($tpicker_options['remember']):
-			// echo "<p onclick='document.getElementById(\"taxonomy-picker\").reset()';>Clear</p>";  // Sort out in v1.9
-		else:
-			echo '<input type="reset" value="Reset" style="margin-right:10%;" />';
-		endif;
-				
-		echo "<input type='submit' value='$search_text' /></p></form>";
-		echo "<script language='javascript' type='text/javascript'>function removeSpaces(string){return string.split(' ').join('%20');}</script>";
-		echo "<script language='javascript' type='text/javascript'>function restoreSpaces(string){return string.split('%20').join(' ');}</script>";
-		echo $after_widget;	
+		echo taxonomy_picker_display_widget( $instance, $args ); // Display the widget
 	}
 
 	/**

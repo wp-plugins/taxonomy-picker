@@ -64,8 +64,11 @@ function kandie_tpicker_menu_initialisation() {
 	$help_text .= "<dl><dt>Redirect to URL on null search<dt>";
 	$help_text .= "<dd>If the user selects ** All ** (or equivalent) for all taxonomies, output will be redirected to this URL.  Point it to the page which shows all content or your front page etc.  Enter the full URL e.g. http://www.glyphs.info</dd>";
 	
-	$help_text .= "<dl><dt>Add pre-pack taxonomy support<dt>";
+	$help_text .= "<dl><dt>Add pre-pack taxonomy support?<dt>";
 	$help_text .= "<dd>Adds additional admin screen which has several pre-packed taxonomies you can use</dd>";
+
+	$help_text .= "<dl><dt>Disable stylesheet?<dt>";
+	$help_text .= "<dd><p>Select if you do <strong>not</strong> want a plugin stylesheet used because you are styling in your theme stylesheet.</p> If you don't tick this, the plugin will use taxonomy-picker.css from your main theme folder if it exists, or from the plugin folder if there isn't one in your theme.</dd>";
 		
 	$help_text .= "<dl><dt>List punctuation<dt>";
 	$help_text .= "<dd>The character to use after taxonomy names when the widget is displayed</dd>";
@@ -106,6 +109,9 @@ function taxonomy_picker_admin_init() {
 
 	add_settings_field( "taxonomies", 'Add pre-pack taxonomy support?', 
 				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','taxonomies');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
+
+	add_settings_field( "no-stylesheet", 'Disable stylesheet?', 
+				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','no-stylesheet');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
 
 	$fn_txt = "kandie_admin_combobox('taxonomy-picker-options','punctuation',array(' ',':','?','-'));";
 	add_settings_field( "punctuation", 'List punctuation?', create_function('',$fn_txt), "tpicker-housekeeping-sec", "tpicker-housekeeping");
