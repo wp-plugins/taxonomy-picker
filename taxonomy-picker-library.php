@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget
- * Version: 1.4.1
+ * Version: 1.4.2
  */
 
 /* Standardise function for accessing $_GET variables
@@ -254,9 +254,9 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 				
 				
 				if($tpicker_options['show-count'] and $allowed and $term->count): 
-					$result .= taxonomy_picker_widget_select_option( $option_name, "$t_name ({$term->count})", $selected );
+					$result .= taxonomy_picker_widget_select_option( $option_name, "$t_name ({$term->count})", $selected, $term->parent );
 				elseif($allowed):
-					$result .= taxonomy_picker_widget_select_option( $option_name, $t_name, $selected );
+					$result .= taxonomy_picker_widget_select_option( $option_name, $t_name, $selected, $term->parent  );
 				endif;
 			endforeach;
 
@@ -290,12 +290,14 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
  * @param	$option_name	string	name of the option
  * @param	$option_label	string	label for the option
  * @param	$selected		mixed	anything non-empty or empty
+ * @param 	$parent			string	the term's parent, if there is one
  * @return	
  */
 
-function taxonomy_picker_widget_select_option( $option_name, $option_label, $selected ) {
+function taxonomy_picker_widget_select_option( $option_name, $option_label, $selected,  $parent = '') {
 	if($selected) $selected =  'selected="selected"'; // force correct format
-	return "<option value='$option_name' $selected>$option_label</option>";
+	$css_class = ($parent) ? "child" : "parent" ; // If there is a parent, then it is a child
+	return "<option value='$option_name' $selected class='$css_class'>$option_label</option>";
 }
 
 ?>
