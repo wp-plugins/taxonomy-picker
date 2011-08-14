@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget
- * Version: 1.4.2
+ * Version: 1.4.3
  */
 
 /* Standardise function for accessing $_GET variables
@@ -167,8 +167,8 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 	if($title) $result .= $before_title.$title.$after_title;	
 	$result .= '<form method="post" action="'.$_SERVER['REQUEST_URI'].'" class="taxonomy-picker" id="taxonomy-picker"><ul class="taxonomy-list">';
 	
+	$search_text = ($tpicker_options['search-text']) ? $tpicker_options['search-text'] : __('Search');
 	if( !$instance['hidesearch'] ):
-		$search_text = ($tpicker_options['search-text']) ? $tpicker_options['search-text'] : __('Search');
 		$result .= "<li class='home search first'><label>"  . apply_filters('tpicker-search-text',  $search_text);
 		$result .= "</label><br/><input name='s' value='' type='text' style='width:90%;'></li>";  // Search text box
 		$css_class="";
