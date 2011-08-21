@@ -1,2 +1,5 @@
 .taxonomy-picker select {clear:left; width: 100%;}
 .tpicker_serach_text {width:90%;}
+.taxonomy-picker .tree .child, .taxonomy-picker .pruned_tree .child {padding-left:10%;}
+.t-picker .pruned_tree .child {display:none;}
+.t-picker .taxonomy-list .pruned_tree .son, .t-picker .taxonomy-list .pruned_tree .ancestor, .t-picker .taxonomy-list option.selected  {display:block;}

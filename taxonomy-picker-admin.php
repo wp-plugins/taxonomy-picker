@@ -73,6 +73,9 @@ function kandie_tpicker_menu_initialisation() {
 	$help_text .= "<dl><dt>List punctuation<dt>";
 	$help_text .= "<dd>The character to use after taxonomy names when the widget is displayed</dd>";
 
+	$help_text .= "<dl><dt>Use beta widget<dt>";
+	$help_text .= "<dd>An upgraded widget is in development.  If you wish to use it, then tick the box.</dd>";
+
 	$help_text .= "</dl><br/></div>";
 	
 	// Auto open the Help Text
@@ -120,6 +123,10 @@ function taxonomy_picker_admin_init() {
 	add_settings_field( "remember", 'Auto show help?', 
 				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','auto-help');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
 
+	add_settings_field( "beta-widget", 'Use new widget (still beta and buggy)', 
+				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','beta-widget');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
+
+
 }
 
 function tpicker_nothing(){
@@ -143,7 +150,7 @@ function taxonomy_picker_options_validate($input) {
 	$kandie_plugins = get_kandie_plugins();
 	$taxonomy_plugin = $kandie_plugins['Taxonomy Picker'];
 	$newinput['version'] = $taxonomy_plugin['Version'];
-	
+
 	return $newinput;
 }
 

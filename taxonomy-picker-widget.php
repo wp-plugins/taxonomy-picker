@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.6
+// Version: 1.10.1
 // Builds the Taxonomy Picker widget
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -97,10 +97,25 @@ class FindHelperWidget extends WP_Widget {
 
 		echo "<table><tbody><tr><td><input id='$earch_id' class='checkbox' type='checkbox' name='$search_name' $radio_checked />";
 		echo "&nbsp;<label for='$search_id' title='showsearch'><span  style='font-size:85%;'>Hide text search?</span></label></td></tr>";
+		
+		// Beta widget extension
+		$options = get_option('taxonomy-picker-options');
+		
+		// Disable in the version for general release
+		
+/*		if( $options['beta-widget'] ):
+			echo "<tr><td><select name='" . $this->get_field_name('combo') . "'>";
+			foreach( array('flat','tree') as $combo ):
+				$selected = ( $instance['combo'] == $combo ) ? 'selected=selected' : '' ;
+				echo "<option value='$combo' $selected>" .  ucwords($combo) . "</option>";
+			endforeach;
+			echo "</select></td><td>&nbsp;<label for='$search_id' title='combo'><span  style='font-size:85%;'>Combobox type</span></label><td></td></tr>";
+		endif; */  
+
 		echo "</tbody></table></fieldset></p><hr>";
 
 
-	 	unset($title_id, $title_name, $title_value,$search_id,$search_value);
+	 	unset($title_id, $title_name, $title_value,$search_id,$search_value,$combo, $selected);
 
 		// Build taxonomy selection boxes	 	
 		$taxes = get_taxonomies('','names');
@@ -138,10 +153,15 @@ class FindHelperWidget extends WP_Widget {
 						// Orderby comboboxes
 						$select_name = $this->get_field_name("orderby_".$tax);
 						$order_select  = "<select name='$select_name' style='width:90%;font-size:90%;'>";
-						foreach( array('name','slug','id','count') as $term):
-							$selected = ($instance['orderby_'.$tax] == $term) ? 'selected="selected"' : '';
-							$order_select .= "<option value='$term' $selected>" . ucwords( ($term=='name') ? 'Label' : $term  ) . "</option>";
+											
+						$orders =array('name','slug','id','count','tree');  
+						if( $options['beta-widget'] ) $orders[]='pruned_tree';
+						foreach( $orders as $order):
+							$selected = ($instance['orderby_'.$tax] == $order) ? 'selected="selected"' : '';
+							$select_label = ($order=='name') ? 'Label' : ucwords( str_replace('_',' ',$order) );
+							$order_select .= "<option value='$order' $selected>$select_label</option>";
 						endforeach;
+						unset($orders, $order);
 
 						// Sort order comboboxes
 						$select_name = $this->get_field_name("sort_".$tax);

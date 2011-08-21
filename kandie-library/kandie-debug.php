@@ -1,6 +1,6 @@
 <?php
 // Kandie Debug functions should never be loaded in a live environment
-// Version: 1.0
+// Version: 1.1
 
 /***
  * Debug function which logs error messages

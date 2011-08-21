@@ -1,7 +1,7 @@
 <?php
 
 /* This is a foundation for all Kandie Girls developments adding versioning, best-library and debugging support
-// Version: 2.4.2
+// Version: 2.5
 
 
 /***
@@ -292,5 +292,40 @@ function kandie_plugin_library_dirs() {
 	return $installed_plugins;
 
 }
+// Identical to get_term() but sorted in tree order
+function kandie_get_terms_tree($taxonomies, $args) {
+	
+	if( is_array( $taxonomies ) ):
+		foreach( $taxonomies as $taxonomy ) $terms[] = kandie_get_terms_tree( $taxonomy, $args ); // Recurse
+		return $terms;
+	endif;
+	
+	$args['parent'] = 0; // Get top level only
+	$args['orderby'] = 'name'; // Want alphabetically within our tree
+
+	$terms = get_terms($taxonomies, $args ); //Get top level terms
+	
+	$result = array();
+	if( $terms ) foreach( $terms as $term ) $result = array_merge( $result, kandie_get_term_subtree($taxonomies, $term, $args) );  // Recurse sub-trees
+	return $result;
+	
+}
+// Inner function for the recursion
+function kandie_get_term_subtree($taxonomy, $term, $args) {
+
+		static $depth = 0;
+
+		$args['parent'] = $term->term_id;
+		$kids = get_terms( $taxonomy, $args);
+			
+		$result[] = $term; // Seed the array			
+
+		$depth++ ;
+		if( 5 >= $depth ) if( !empty($kids) ) foreach($kids as $kid ) $result = array_merge( $result, kandie_get_term_subtree($taxonomy, $kid, $args) ); // Recurse
+		$depth-- ;
+		
+		return $result; // Will always return an array with at least one item
+}
+
 
 ?>

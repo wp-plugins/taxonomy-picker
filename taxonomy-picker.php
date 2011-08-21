@@ -7,7 +7,7 @@ Results will be displayed using your theme's standard search form so the results
 
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.9.4
+ * Version: 1.10.1
  *
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
@@ -22,7 +22,7 @@ Results will be displayed using your theme's standard search form so the results
 ************************************/
 if( !defined('TPICKER_DIR') ) define('TPICKER_DIR', trailingslashit(dirname(__FILE__)) );
 if( !function_exists('kandie_debug_status') ) require_once (TPICKER_DIR.'kandie-library/kandie-foundation.php');  // Add Kandie debug & versioning support
-add_action( 'init', 'taxonomy_picker_enqueue' );  // Enque the stylesheet
+add_action( 'init', 'taxonomy_picker_enqueue' );  // Enqueue the stylesheet and any scripts
 
 function taxonomy_picker_enqueue() {
 	$options = get_option('taxonomy-picker-options');
@@ -38,12 +38,26 @@ function taxonomy_picker_enqueue() {
 	endif;
     wp_enqueue_style( "tpicker");
     
+    // Now add our scripts
+    if( $options['beta-widget'] and !is_admin() ):
+/*    
+		wp_enqueue_script('jquery'); 
+
+	    wp_register_script( 'tree', trailingslashit( plugins_url('',__FILE__) ) . "jquery/jquery.optionTree.js", "" ,"1", false);
+		wp_enqueue_script('tree');
+*/
+	endif;
+    
     return;
 }
 
 /** Widget **
 *************/
-require_once(TPICKER_DIR.'taxonomy-picker-library.php');  // Add functions common to all aspects
+$tpicker_options = get_option('taxonomy-picker-options');
+require_once(TPICKER_DIR. ( ($tpicker_options['beta-widget'] ) ? 't' : 'taxonomy-' ) . 'picker-library.php');  // Use required library version
+unset( $tpicker_options ); // Avoid hanging around in global scope
+
+
 require_once(TPICKER_DIR.'taxonomy-picker-widget.php');  // Build and display the widget
 if( array_key_exists('taxonomies', get_option('taxonomy-picker-options') ) ) include_once(TPICKER_DIR.'taxonomy-picker-taxonomies.php');  // Add pre-built taxonomies
 

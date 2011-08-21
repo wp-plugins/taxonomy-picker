@@ -1,7 +1,7 @@
 <?php
 
-/* Functons shared by the shortcode and widget
- * Version: 1.4.3
+/* Functons shared by the shortcode and widget - Deprecated version
+ * Version: 1.5
  */
 
 /* Standardise function for accessing $_GET variables
@@ -173,7 +173,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 		$result .= "</label><br/><input name='s' value='' type='text' style='width:90%;'></li>";  // Search text box
 		$css_class="";
 	else:
-		$css_class="class='first home'";
+		$css_class='first home ';
 	endif;
 	
 
@@ -193,14 +193,14 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 		
 		$taxonomy_name = $data_item['name'];
 		$taxonomy = get_taxonomy( $taxonomy_name ); // Get the taxonomy object
-		$terms = get_terms($taxonomy_name, $term_args );
+		$terms = ( $data_item['orderby'] == 'tree' ) ? kandie_get_terms_tree( $taxonomy_name, $term_args ) : get_terms($taxonomy_name, $term_args );
 
 		if( $data_item['hidden'] ):
 			$result .= "<input type='hidden' name='$taxonomy_name' value='" . $data_item['value'] . "' />";
 				
 		elseif( taxonomy_picker_all_text($tax_label) <> 'N/A' ): // Main live display of combobox
-			
-			$result .= "<li $css_class><label style='float:left;'>$tax_label</label><select name='$taxonomy_name'>"; 
+			$css_class .= $data_item['orderby'];
+			$result .= "<li class='$css_class'><label style='float:left;'>$tax_label</label><select name='$taxonomy_name'>"; 
 			
 			$result .= "<option value='$taxonomy_name=all'>". taxonomy_picker_all_text($tax_label) ."</option>";
 			$css_class=''; // After home reset to ''
