@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget - Deprecated version
- * Version: 1.5
+ * Version: 1.10.2
  */
 
 /* Standardise function for accessing $_GET variables
@@ -191,6 +191,19 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 		if( $data_item['orderby'] ) $term_args['orderby'] = $data_item['orderby'];
 		if( $data_item['sort'] ) $term_args['order'] = $data_item['sort'];
 		
+		switch( $tpicker_options['empty-terms'] ): // How to handle empty items
+		case 'always':
+			$term_args['hide_empty'] = 0;
+			break;
+		case 'never':
+			$term_args['hide_empty'] = 1;
+			$term_args['hierarchical'] = 1;
+			break;
+		case 'sometimes':
+			$term_args['hide_empty'] = 1;
+			$term_args['hierarchical'] = 1;
+		endswitch;
+		
 		$taxonomy_name = $data_item['name'];
 		$taxonomy = get_taxonomy( $taxonomy_name ); // Get the taxonomy object
 		$terms = ( $data_item['orderby'] == 'tree' ) ? kandie_get_terms_tree( $taxonomy_name, $term_args ) : get_terms($taxonomy_name, $term_args );
@@ -253,7 +266,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 				endif;
 				
 				
-				if($tpicker_options['show-count'] and $allowed and $term->count): 
+				if($tpicker_options['show-count'] and $allowed ): 
 					$result .= taxonomy_picker_widget_select_option( $option_name, "$t_name ({$term->count})", $selected, $term->parent );
 				elseif($allowed):
 					$result .= taxonomy_picker_widget_select_option( $option_name, $t_name, $selected, $term->parent  );

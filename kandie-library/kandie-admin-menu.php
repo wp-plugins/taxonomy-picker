@@ -2,7 +2,7 @@
 
 // Standard module to initialise the Kandie Menu on the dashboard of nothing else has done it.  Copy to all plugins
 
-// Version: 2.7
+// Version: 2.8
 
 add_action( 'admin_menu', 'kandie_girls_top_menu', 10);  // Add Kandie admin menu support
 add_action( 'admin_init', 'kandie_girls_admin_menu_init' );  // Initialise Kandie admin menu
@@ -134,7 +134,7 @@ function kandie_admin_checkbox($option_name, $item_name) {
  * @param 	$option_name	string		Name of option in the database
  * @param	$item_name		string		Name of the item within the $option array
  * @param	$valid			mixed		Array of strings of the valid items, or a comma separated list of items to arrayify
- *												use id=>Description is you need nice labels not in the database
+ *												use id=>Description if you need nice labels not in the database
  */
 
 function kandie_admin_combobox($option_name, $item_name, $valid) {

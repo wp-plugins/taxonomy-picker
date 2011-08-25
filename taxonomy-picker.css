@@ -1,5 +1,12 @@
 .taxonomy-picker select {clear:left; width: 100%;}
-.tpicker_serach_text {width:90%;}
-.taxonomy-picker .tree .child, .taxonomy-picker .pruned_tree .child {padding-left:10%;}
-.t-picker .pruned_tree .child {display:none;}
-.t-picker .taxonomy-list .pruned_tree .son, .t-picker .taxonomy-list .pruned_tree .ancestor, .t-picker .taxonomy-list option.selected  {display:block;}
+.tpicker_search_text {width:90%;}
+
+.taxonomy-picker .tree .level2 {padding-left:8%;}
+.taxonomy-picker .tree .level3 {padding-left:16%;}
+.taxonomy-picker .tree .level4 {padding-left:24%;}
+.taxonomy-picker .tree .level5 {padding-left:32%;}
+.taxonomy-picker .tree .level6 {padding-left:40%;}
+
+.taxonomy-picker .pruned option {display:none;}
+.taxonomy-picker li.pruned .selected, .taxonomy-picker li.pruned .ancestor, .taxonomy-picker li.pruned .kid, 
+	.taxonomy-picker li.pruned .sibling, .taxonomy-picker li.pruned .level1  {display:block;}

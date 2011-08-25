@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.10.1
+// Version: 1.10.2
 // Builds the Taxonomy Picker widget
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -17,7 +17,7 @@ class FindHelperWidget extends WP_Widget {
 		$widget_ops = array( 'classname' => 'taxonomy-picker', 'description' => __('Presents taxonomies as drop-downs so reader can pick query', 'taxonomy_picker') );
 
 		/* Widget control settings. */
-		$control_ops = array( 'id_base' => 'taxonomy_picker' );
+		$control_ops = array( 'width' => 525,  'id_base' => 'taxonomy_picker' );
 
 		/* Create the widget. */
 		$this->WP_Widget( 'taxonomy_picker', __('Taxonomy Picker', 'taxonomy_picker'), $widget_ops, $control_ops );
@@ -121,7 +121,7 @@ class FindHelperWidget extends WP_Widget {
 		$taxes = get_taxonomies('','names');
 		if(count($taxes)>0): ?>
 			
-			<fieldset id="taxonomy-picker-taxonomoies"><h3>Taxonomies</h3><div style="width:240px;overflow-x:scroll;">
+			<fieldset id="taxonomy-picker-taxonomoies"><h3>Taxonomies</h3><div>
 			<table  style="width:400px;"><thead><tr>
 				<td><strong>Taxonomy</strong></td>
 				<td><strong>Fix/Initial</strong></td>

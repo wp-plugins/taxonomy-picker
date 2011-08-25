@@ -1,7 +1,7 @@
 <?php
 
 // Tidy up the POST output of the Taxonomy Widget form to pass to the blog homepage via URI to drive normal searching behaviour
-// Version: 1.8
+// Version: 1.10.2
 
 function taxonomy_picker_process() {  // Build a URI form the data POSTed by the widget form
 
@@ -45,6 +45,9 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 		else:
 			$blog_url = get_bloginfo('url');			
 		endif;
+		
+		$blog_url = apply_filters('tpicker-built-uri', $blog_url);
+	
 		wp_redirect($blog_url, 302 );  // Redirect to the built URI
 		die();
 	endif;

@@ -55,8 +55,11 @@ function kandie_tpicker_menu_initialisation() {
 	$help_text .= "<dd>The form will be presented with a Search button (possibly translated).  If you wish to change this text, enter your alternative here</dd>";
 
 
-	$help_text .= "<dl><dt>Show item count<dt>";
+	$help_text .= "<dl><dt>Show item count?<dt>";
 	$help_text .= "<dd>Turn on if you wish to show item counts in the drop downs.  These are the total count and don't update on drill down.</dd>";
+	
+	$help_text .= "<dl><dt>Include empty terms?<dt>";
+	$help_text .= "<dd>If terms don't have any published posts attached to them, do you wish to show them?</dd>";
 	
  	$help_text .= "<dl><dt>Remember the User Count<dt>";
 	$help_text .= "<dd>If turned in then the widget will be pre-populated with the query just run.  To keep the setup stateless, this is passed in the URL and will be lost as soon as the user visits another page than the immediate results page.</dd>";
@@ -101,6 +104,10 @@ function taxonomy_picker_admin_init() {
 
 	add_settings_field( "show-count", 'Show item count', 
 				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','show-count');"), "tpicker-processing-sec", "tpicker-processing");
+
+	$fn_txt = "kandie_admin_combobox('taxonomy-picker-options','empty-terms',array('always=>Always','never=>Never','sometimes=>If Only Empty Descendents'));";
+	add_settings_field( "empty-terms", 'Include empty terms?', create_function('',$fn_txt),	"tpicker-processing-sec","tpicker-processing");
+
 
 	add_settings_field( "remember", 'Remember the user query?', 
 				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','remember');"), "tpicker-processing-sec", "tpicker-processing");
