@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget - Deprecated version
- * Version: 1.10.2
+ * Version: 1.10.3
  */
 
 /* Standardise function for accessing $_GET variables
@@ -19,6 +19,7 @@ function taxonomy_picker_option_set($get_var) {
  */
 
 function taxonomy_picker_tpicker_array() {
+	if( !isset( $_GET['kandie_tpicker'] ) ) return null; 
 	$tpicker_get = taxonomy_picker_dencode( $_GET['kandie_tpicker'], 'decode' );
 	if( $tpicker_get ):
 		$input = explode( '&', $tpicker_get );
@@ -285,7 +286,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 	$result .= "<input type='hidden' name='kate-phizackerley' value='taxonomy-picker' />";
 	$result .= '<li style="height:8px;" class="last"></li></ul><p style="text-align:center;margin:0 auto;">';
 	
-	if($tpicker_options['remember']):
+	if( isset($tpicker_options['remember']) ):
 		// $result .= "<p onclick='document.getElementById(\"taxonomy-picker\").reset()';>Clear</p>";  // Sort out in v2.0
 	else:
 		$result .= '<input type="reset" value="Reset" style="margin-right:10%;" />';

@@ -1,7 +1,7 @@
 <?php
 
 // PHP for the Taxonomy Picker Admin menu
-// Version: 1.3
+// Version: 1.4
 
 add_action( 'admin_menu', 'kandie_tpicker_menu_initialisation', 20); // Kandie Menu added as 10
 add_action( 'admin_init', 'taxonomy_picker_admin_init', 20 ); 
@@ -82,7 +82,7 @@ function kandie_tpicker_menu_initialisation() {
 	$help_text .= "</dl><br/></div>";
 	
 	// Auto open the Help Text
-	if($options['auto-help'] == 'on' ) $help_text .= kandie_auto_open_help();
+	if( isset($options['auto-help']) ) {$help_text .= kandie_auto_open_help();}
 
 	add_contextual_help( $page , $help_text );
 }
@@ -95,7 +95,7 @@ function taxonomy_picker_admin_init() {
 	add_settings_section( "tpicker-processing", 'Query Processing', 'tpicker_nothing', "tpicker-processing-sec");
 				
 	$fn_txt = "kandie_admin_combobox('taxonomy-picker-options','all-format',array('** All **','All Items','Everything','Every {name}','All {name}', 'All {name}s', 'N/A'));";
-	str_replace($fn_txt,array('All','Items','Every','Everything'), array(__('All'),__('Items'),__('Every'),__('Everything')) );			
+	str_replace( (string)$fn_txt, array('All','Items','Every','Everything'), array(__('All'),__('Items'),__('Every'),__('Everything')) );			
 	add_settings_field( "all-format", 'Text for \'all\' option', create_function('',$fn_txt),	"tpicker-processing-sec","tpicker-processing");
 
 	add_settings_field('all-override','Override text for ** all ** (optional)', 'taxonomy_picker_tpfn2', "tpicker-processing-sec","tpicker-processing");				

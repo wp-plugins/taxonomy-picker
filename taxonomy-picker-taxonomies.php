@@ -1,8 +1,8 @@
 <?php
 
-//Version: 1.0
+//Version: 1.1
 
-$taxonomy_picker_prepacks = explode( "," , "collection,colour,licence,number,product,sex,shape,size,style,what,where,when,who,writer"); // Our prepack taxonomies
+$taxonomy_picker_prepacks = explode( "," , "collection,colour,licence,nature,number,product,sex,shape,size,style,what,where,when,who,writer"); // Our prepack taxonomies
 
 add_action( 'init', 'taxonomy_picker_create_taxonomies', 0 );
 add_action( 'admin_init', 'taxonomy_picker_taxonomies_init', 20 ); 
@@ -20,12 +20,12 @@ function taxonomy_picker_create_taxonomies() {
 	
 	foreach( $taxonomy_picker_prepacks as $tax):
 		
-		if( $taxonomy_options["tax:$tax-show"] ):
+		if( array_key_exists("tax:$tax-show", $taxonomy_options) ):
 		
 			$label = $taxonomy_options["tax:$tax-label"];
 			if( !$label) $label = ucwords($tax) . ( ( $tax[0] == 'w' ) ? '?' : '' );
-			 
-			$args = array( 'hierarchical' => (($taxonomy_options["tax:$tax-hier"]) ? true : false) , 'label' => $label, 'query_var' => true, 'rewrite' => true );
+			if( isset($taxonomy_options["tax:$tax-hier"]) ) $hierarchical = ($taxonomy_options["tax:$tax-hier"])? true : false; else $hierarchical = false;
+			$args = array( 'hierarchical' => $hierarchical , 'label' => $label, 'query_var' => true, 'rewrite' => true );
 			register_taxonomy( $tax, 'post', $args );
 			
 		endif;
@@ -51,7 +51,7 @@ function taxonomy_picker_taxonomies_menu_initialisation() {
 	
 	// Auto open the Help Text
 	$options = get_option('taxonomy-picker-options');
-	if($options['auto-help'] == 'on' ) $help_text .= kandie_auto_open_help();
+	if( isset($options['auto-help']) ) {$help_text .= kandie_auto_open_help();}
 
 	add_contextual_help( $page , $help_text );
 }
@@ -66,7 +66,7 @@ function taxonomy_picker_taxonomies_init() {
 
 	foreach($taxonomy_picker_prepacks as $tax):
 		
-		add_settings_section( "$tp-$tax", "Pre-pack ($tax)", 'tpicker_nothing', __FILE__);		
+		add_settings_section( "$tp-$tax", ucfirst($tax) . " (prepack)", 'tpicker_nothing', __FILE__);		
 		add_settings_field( "tax:$tax-show", "Enable", 
 				create_function('',"kandie_admin_checkbox('$tp','tax:$tax-show');"), __FILE__, "$tp-$tax");
 		add_settings_field( "tax:$tax-hier", "Hierarchical?", 
@@ -94,7 +94,7 @@ function taxonomy_picker_create_taxonomies_menu(){
 	$tp = 'taxonomy-picker-taxonomies'; // just a convenient shorthand 
 	
 	?>
-	<style type="text/css">#prepacks tr {float:left;}</style>
+	<style type="text/css">#prepacks tr {float:left;height:36px;border-bottom: 3px solid silver} # prepacks * {padding:0} #prepacks h3 {margin-bottom:0}</style>
 	<div class="wrap">
 	
 		<div class="icon32" id="icon-options-general"><br></div>
@@ -102,15 +102,16 @@ function taxonomy_picker_create_taxonomies_menu(){
 		<form action="options.php" method="post">
 		
 			<?php  settings_fields( $tp ); ?>
-			
+
 			<div id='prepacks'>
 
 				<?php do_settings_sections(__FILE__); ?>		
 			
 			</div>
 			
-		<input name="Submit" type="submit" value="Save Changes" />
+		<p>&nbsp;</p><input name="Submit" type="submit" value="Save Changes" />
 		</form>
+		<p>After making any changes you <strong style="color:red;">MUST</strong> go to Settings&rArr;Permalinks and Save Changes</p>
 		<p><strong>&copy; Kate Phizackerley, 2010,2011</strong></p>
 	</div> <!-- Wrap -->
 	<?php

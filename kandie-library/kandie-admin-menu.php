@@ -2,7 +2,7 @@
 
 // Standard module to initialise the Kandie Menu on the dashboard of nothing else has done it.  Copy to all plugins
 
-// Version: 2.8
+// Version: 2.9
 
 add_action( 'admin_menu', 'kandie_girls_top_menu', 10);  // Add Kandie admin menu support
 add_action( 'admin_init', 'kandie_girls_admin_menu_init' );  // Initialise Kandie admin menu
@@ -56,7 +56,7 @@ function kandie_create_admin_menu(){
 	
 	<?php foreach( $kandie_plugins as $kp ): ?>
 		<tr>
-			<?php if($kp['PluginURI']): ?>
+			<?php if( isset($kp['PluginURI']) ): ?>
 				<td><a href="<?php echo $kp['PluginURI'];?>" title="<?php echo $kp['Name'];?>"><?php echo $kp['Name'];?></a></td>
 			<?php else: ?>
 				<td><?php echo $kp['Name'];?></td>
@@ -124,7 +124,7 @@ function kandie_admin_library_versions() {
 
 function kandie_admin_checkbox($option_name, $item_name) {
 	$options = get_option( $option_name );	
-	if($options[$item_name]) { $checked = ' checked="checked" '; }
+	if( isset($options[$item_name])) { $checked = ' checked="checked" '; } else $checked = '';
 	echo "<input ".$checked." id='$item_name' name='{$option_name}[{$item_name}]' type='checkbox' />";
 }
 

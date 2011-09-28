@@ -7,7 +7,7 @@ Results will be displayed using your theme's standard search form so the results
 
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.10.2
+ * Version: 1.10.3
  *
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
@@ -26,7 +26,7 @@ add_action( 'init', 'taxonomy_picker_enqueue' );  // Enqueue the stylesheet and 
 
 function taxonomy_picker_enqueue() {
 	$options = get_option('taxonomy-picker-options');
-	if( $options['no-stylesheet'] ) return; // Exit if no stylesheet is wanted.
+	if( isset($options['no-stylesheet']) ) return; // Exit if no stylesheet is wanted.
 
 	//Enqueue taxonomy-picker.css from main theme folder if it exists, otherwise from plugin folder
 	if(  file_exists( trailingslashit( get_stylesheet_directory() ) . 'taxonomy-picker.css'  ) ): //Test theme
@@ -39,7 +39,7 @@ function taxonomy_picker_enqueue() {
     wp_enqueue_style( "tpicker");
     
     // Now add our scripts
-    if( $options['beta-widget'] and !is_admin() ):
+    if( array_key_exists('beta-widget', $options) and !is_admin() ):
 /*    
 		wp_enqueue_script('jquery'); 
 

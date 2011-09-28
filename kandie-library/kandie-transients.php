@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.0.2
+// Version: 1.1
 
 /***
  * Kandie transients class is used to combine our common, semi-permanent transients to reduce database calls by getting them just once in each session
@@ -32,7 +32,7 @@ class kandie_transient_class {
 	
 	// Get a transient
 	public function get($name) {
-		return $this->transients[$name];
+		if( array_key_exists( $name, $this->transients ) ) return $this->transients[$name]; else return null;
 	}
 	
 	// Set a transient
