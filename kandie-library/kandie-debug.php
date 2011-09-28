@@ -1,6 +1,6 @@
 <?php
 // Kandie Debug functions should never be loaded in a live environment
-// Version: 1.1
+// Version: 1.2
 
 /***
  * Debug function which logs error messages
@@ -18,10 +18,11 @@ function kandie_debug_log($message, $stream = 'mixed', $temp_debug_status = fals
 	$stream = strtolower($stream);
 	if($stream == 'mixed' ) $stream = kandie_debug_status();  // Variable default
 
-	if( (WP_DEBUG !== true) and ( kandie_debug_status() === false ) and !$temp_debug_status ) return;  // Break out if no debug option is set on
+	if( ( kandie_debug_status() === false ) and !$temp_debug_status ) return;  // Break out if no debug option is set on
 	
 	if( is_array($message) || is_object($message)) $message = print_r( $message, true ); // Convert to something printable
-    if( $stream == 'echo' or $stream == 'backtrace'  or $stream == 'simple') echo $message ; else error_log($message); // Print or log it as demanded
+    if( headers_sent() and ($stream == 'echo' or $stream == 'backtrace'  or $stream == 'simple') )
+    			echo $message ; else error_log($message); // Print or log it as demanded
 }
 
 /***

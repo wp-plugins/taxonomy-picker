@@ -1,6 +1,6 @@
 <?php
 
-//Version: 1.1
+//Version: 1.2
 
 $taxonomy_picker_prepacks = explode( "," , "collection,colour,licence,nature,number,product,sex,shape,size,style,what,where,when,who,writer"); // Our prepack taxonomies
 
@@ -20,7 +20,7 @@ function taxonomy_picker_create_taxonomies() {
 	
 	foreach( $taxonomy_picker_prepacks as $tax):
 		
-		if( array_key_exists("tax:$tax-show", $taxonomy_options) ):
+		if( isset($taxonomy_options["tax:$tax-show"]) ):
 		
 			$label = $taxonomy_options["tax:$tax-label"];
 			if( !$label) $label = ucwords($tax) . ( ( $tax[0] == 'w' ) ? '?' : '' );
