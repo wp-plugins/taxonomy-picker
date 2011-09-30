@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget - Deprecated version
- * Version: 1.10.3
+ * Version: 1.10.4
  */
 
 /* Standardise function for accessing $_GET variables
@@ -177,14 +177,15 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 		$css_class='first home ';
 	endif;
 	
-
 	
+
 	foreach($instance['taxonomies'] as $taxonomy_name => $data_item):  // Loop through chosen list of taxonomies 
 		$taxonomy = get_taxonomy( $taxonomy_name ); // Get the taxonomy object
 		$tax_label = __( ( $taxonomy_name == 'category' ) ? $instance['category_title'] : $taxonomy->label ) . $tpicker_options['punctuation']; 
 		$taxies[$tax_label] = $data_item;
 	endforeach;
 	ksort( $taxies ); //Put taxonomies into alpha label order
+	$taxes = apply_filters( 'tpicker-taxonomies', $taxes); // Filter taxonomy order
 	
 	foreach($taxies as $tax_label => $data_item):  // Loop through chosen list of taxonomies (by string detection on all items in the array)
 	
