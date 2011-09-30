@@ -2,7 +2,7 @@
 
 /* Class-based library
  * Functons shared by the shortcode and widget
- * Version: 1.0
+ * Version: 1.1
  */
 
 
@@ -200,10 +200,10 @@ class taxonomy_picker_widget {
 	public function __construct($instance, $args) {
 	
 		// Check whether we displaying the results of a prevous use (ie. kandie_tpicker is set)
-		$this->inputs = apply_filters('tpicker-inputs', taxonomy_picker_tpicker_array() );
+		$this->inputs = apply_filters('tpicker_inputs', taxonomy_picker_tpicker_array() );
 		
 		// Get the configuration options from the database
-		$this->options = apply_filters('tpicker-options', get_option('taxonomy-picker-options') );
+		$this->options = apply_filters('tpicker_options', get_option('taxonomy-picker-options') );
 		if( empty( $this->options['empty-terms'] ) ) $this->options['empty-terms'] = 'always'; // Upgrade defence for new option
 	
 		// Upgrade defence for v1.8 - won't be needed long term.  If taxonomies haven't been set, process the instance
@@ -217,15 +217,15 @@ class taxonomy_picker_widget {
 			$this->taxonomies[$tax_label] = $data_item;  // Save the main item
 		endforeach;
 		ksort( $this->taxonomies ); //Put taxonomies into alpha label order
-		$this->taxonomies = apply_filters( 'tpicker-taxonomies', $this->taxonomies); // Filter taxonomy order
+		$this->taxonomies = apply_filters( 'tpicker_taxonomies', $this->taxonomies); // Filter taxonomy order
 	
 		if( $args ) extract( $args); // Unpack $before_widget etc
 		
 		$title = apply_filters('widget_title', $instance['title'] );		
 		if($title) $title = $before_title.$title.$after_title;	// Wrap it
 		
-		$this->before_widget = apply_filters('tpicker-before' , ( ($before_widget) ? $before_widget : $this->before_widget ) );
-		$this->after_widget = apply_filters('tpicker-after' , ( ($after_widget) ? $after_widget : $this->after_widget ) );
+		$this->before_widget = apply_filters('tpicker_before' , ( ($before_widget) ? $before_widget : $this->before_widget ) );
+		$this->after_widget = apply_filters('tpicker_after' , ( ($after_widget) ? $after_widget : $this->after_widget ) );
 		
 		$this->hidesearch = $instance['hidesearch']; // Defaults to show (false)
 		
@@ -291,7 +291,7 @@ class taxonomy_picker_widget {
 		
 		$search_text = ($this->options['search-text']) ? $this->options['search-text'] : __('Search');
 		if( !$this->hidesearch ):
-			$this->HTML .= "<li class='home search first'><label>"  . apply_filters('tpicker-search-text',  $search_text);
+			$this->HTML .= "<li class='home search first'><label>"  . apply_filters('tpicker_search_text',  $search_text);
 			$this->HTML .= "</label><br/><input name='s' value='' type='text' class'tpicker-search-text'></li>";  // Search text box
 			$css_class="";
 		else:

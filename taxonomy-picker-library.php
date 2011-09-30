@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget - Deprecated version
- * Version: 1.10.7
+ * Version: 1.10.8
  */
 
 /* Standardise function for accessing $_GET variables
@@ -170,7 +170,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 	
 	$search_text = ($tpicker_options['search-text']) ? $tpicker_options['search-text'] : __('Search');
 	if( !$instance['hidesearch'] ):
-		$result .= "<li class='home search first'><label>"  . apply_filters('tpicker-search-text',  $search_text);
+		$result .= "<li class='home search first'><label>"  . apply_filters('tpicker_search-text',  $search_text);
 		$result .= "</label><br/><input name='s' value='' type='text' style='width:90%;'></li>";  // Search text box
 		$css_class="";
 	else:
@@ -185,7 +185,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 		$taxies[$tax_label] = $data_item;
 	endforeach;
 	ksort( $taxies ); //Put taxonomies into alpha label order
-	$taxies = apply_filters( 'tpicker-taxonomies', $taxies); // Filter taxonomy order
+	$taxies = apply_filters( 'tpicker_taxonomies', $taxies); // Filter taxonomy order
 	
 	foreach($taxies as $tax_label => $data_item):  // Loop through chosen list of taxonomies (by string detection on all items in the array)
 	
