@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget - Deprecated version
- * Version: 1.10.4
+ * Version: 1.10.7
  */
 
 /* Standardise function for accessing $_GET variables
@@ -185,7 +185,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 		$taxies[$tax_label] = $data_item;
 	endforeach;
 	ksort( $taxies ); //Put taxonomies into alpha label order
-	$taxes = apply_filters( 'tpicker-taxonomies', $taxes); // Filter taxonomy order
+	$taxies = apply_filters( 'tpicker-taxonomies', $taxies); // Filter taxonomy order
 	
 	foreach($taxies as $tax_label => $data_item):  // Loop through chosen list of taxonomies (by string detection on all items in the array)
 	

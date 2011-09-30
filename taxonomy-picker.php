@@ -7,7 +7,7 @@ Results will be displayed using your theme's standard search form so the results
 
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.10.6
+ * Version: 1.10.7
  *
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
