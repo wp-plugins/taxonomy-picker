@@ -9,7 +9,7 @@ Author: Kate Phizackerley
 Requires at least: 3.1
 Tested up to: 3.2.1
 Stable tag: trunk
-Version: 1.10.8
+Version: 1.10.9
 
 Add a widget to help your readers build custom queries using drop downs of your categories and custom taxonomies.  The latest version comes with a fully optional set of pre-packed custom taxonomies for anybody who wants additional "cartegories" or sets of "tags" without coding - the names are customisable.
 
@@ -24,6 +24,8 @@ For example on my site I use it to allow users to:
 + Find all posts containing the word Egypt within the Books category
 + Find all posts within the Magazine category which match "Valley of the Kings" in my "Where?" custom taxonomy which also include the word Tutankhamun
 
+You can display the query the reader selected from within code by using echo tpicker_query_string();
+
 
 *Plugin home:* http://www.squidoo.com/taxonomy-picker-wordpress-plugin
 
@@ -36,6 +38,9 @@ Download the and activate the plugin the usual way.  The new widget will then be
 
 
 == Upgrade Notice ==
+= 1.10.9 =
+
+Fixes bug with tags; adds tpicker_query_string() function
 
 = 1.10 =
 
@@ -84,6 +89,7 @@ The plugin now comes with an options screen in Admin which allows you to define:
 See  http://www.squidoo.com/taxonomy-picker-wordpress-plugin
 
 == Changelog ==
+1.10.9 Fixes bug with tags; adds tpicker_query_string() function
 1.5  Admin screen.  Post count.  Remember query.  Better handling of "all" option.
 1.4  Bug fixes
 1.3  Sorted multiple words in plain text search

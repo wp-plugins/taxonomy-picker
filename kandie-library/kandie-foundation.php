@@ -1,7 +1,7 @@
 <?php
 
 /* This is a foundation for all Kandie Girls developments adding versioning, best-library and debugging support
-// Version: 2.5
+// Version: 2.6
 
 
 /***
@@ -17,6 +17,7 @@
 require_once( 'kandie-transients.php'); // Add transients support
 
 function kandie_debug_status() {
+	if( !defined( KANDIE_THEME_DIR ) ) return; // Ensure it doesn't run onlive systems
 
 	static $kandie_debug_status_saved = false;	
 	
@@ -66,6 +67,9 @@ function kandie_debug_status() {
  */
 
 function kandie_backtrace( $stream = 'echo', $drop = 0) {
+
+	if( !defined( KANDIE_THEME_DIR ) ) return; // Ensure it doesn't run onlive systems
+
 	require_once( 'kandie-debug.php' ); // Load up the debug functions
 	$styles = "<style type='text/css'>.trace-indent {margin-left:18px}</style>";
 	$dropped = false;

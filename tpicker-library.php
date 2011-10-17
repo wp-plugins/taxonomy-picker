@@ -158,6 +158,25 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 
 
 
+/***
+ * If the query was "remembered", returns a representation of the query
+ *
+ * @return	query string
+ */
+function tpicker_query_string() {
+	// Check whether we displaying the results of a prevous use (ie. kandie_tpicker is set)
+	$tpicker_inputs = taxonomy_picker_tpicker_array();
+	if( empty( $tpicker_inputs ) ):
+		return "";
+	else:
+		foreach( $tpicker_inputs as $key => $data ):
+			$taxonomy = get_taxonomy( ($key == 'tag') ? 'post_tag' : $key );
+			$result .= $taxonomy->label . ': ' . $data . '; '; 
+		endforeach;
+	endif;
+	return $result;
+}
+
 
 
 
@@ -334,11 +353,13 @@ class taxonomy_picker_widget {
 		
 		if( ($taxonomy_name == 'category') and ($this->choose_categories<>'A') ):
 			$terms = $this->categories;
+		elseif( $taxonomy_name == "post_tag" ):
+			$terms = get_tags($term_args);
+			$taxonomy_name = 'tag';
 		else:
 			$terms = ( substr($data_item['orderby'],-4) == 'tree' ) ? kandie_get_terms_tree( $taxonomy_name, $term_args ) : get_terms($taxonomy_name, $term_args );
 		endif;
 
-		
 		$css_class .= ( $data_item['orderby'] == 'pruned_tree' ) ? 'tree pruned' : $data_item['orderby'] ; // Set the class for the containing <li>
 		$this->tax_type = $data_item['orderby'];
 	

@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget - Deprecated version
- * Version: 1.10.8
+ * Version: 1.10.9
  */
 
 /* Standardise function for accessing $_GET variables
@@ -147,7 +147,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 		
 	// Check whether we displaying the results of a prevous use (ie. kandie_tpicker is set)
 	$tpicker_inputs = taxonomy_picker_tpicker_array();
-	
+		
 	// Get the configuration options from the database
 	$tpicker_options = get_option('taxonomy-picker-options');
 
@@ -176,17 +176,17 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 	else:
 		$css_class='first home ';
 	endif;
-	
-	
-
+		
 	foreach($instance['taxonomies'] as $taxonomy_name => $data_item):  // Loop through chosen list of taxonomies 
+
 		$taxonomy = get_taxonomy( $taxonomy_name ); // Get the taxonomy object
-		$tax_label = __( ( $taxonomy_name == 'category' ) ? $instance['category_title'] : $taxonomy->label ) . $tpicker_options['punctuation']; 
+		$tax_label = ( ( $taxonomy_name == 'category' ) ? $instance['category_title'] : $taxonomy->label ) . $tpicker_options['punctuation']; 
 		$taxies[$tax_label] = $data_item;
+
 	endforeach;
 	ksort( $taxies ); //Put taxonomies into alpha label order
 	$taxies = apply_filters( 'tpicker_taxonomies', $taxies); // Filter taxonomy order
-	
+		
 	foreach($taxies as $tax_label => $data_item):  // Loop through chosen list of taxonomies (by string detection on all items in the array)
 	
 		// Set up any request for the sorting of the terms
@@ -208,7 +208,13 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 		
 		$taxonomy_name = $data_item['name'];
 		$taxonomy = get_taxonomy( $taxonomy_name ); // Get the taxonomy object
-		$terms = ( $data_item['orderby'] == 'tree' ) ? kandie_get_terms_tree( $taxonomy_name, $term_args ) : get_terms($taxonomy_name, $term_args );
+		
+		if( $taxonomy_name  == "post_tag" ):
+			$terms = get_tags($term_args);
+			$taxonomy_name="tag";
+		else: 
+			$terms = ( $data_item['orderby'] == 'tree' ) ? kandie_get_terms_tree( $taxonomy_name, $term_args ) : get_terms($taxonomy_name, $term_args );
+		endif;
 
 		if( $data_item['hidden'] ):
 			$result .= "<input type='hidden' name='$taxonomy_name' value='" . $data_item['value'] . "' />";
@@ -257,7 +263,6 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 					$allowed = true;
 					$option_name = $taxonomy_name.'='.$term->slug;
 				endif;
-									
 				$t_name = __($term->name);
 				
 				$selected = '';
@@ -313,6 +318,25 @@ function taxonomy_picker_widget_select_option( $option_name, $option_label, $sel
 	if($selected) $selected =  'selected="selected"'; // force correct format
 	$css_class = ($parent) ? "child" : "parent" ; // If there is a parent, then it is a child
 	return "<option value='$option_name' $selected class='$css_class'>$option_label</option>";
+}
+
+/***
+ * If the query was "remembered", returns a representation of the query
+ *
+ * @return	query string
+ */
+function tpicker_query_string() {
+	// Check whether we displaying the results of a prevous use (ie. kandie_tpicker is set)
+	$tpicker_inputs = taxonomy_picker_tpicker_array();
+	if( empty( $tpicker_inputs ) ):
+		return "";
+	else:
+		foreach( $tpicker_inputs as $key => $data ):
+			$taxonomy = get_taxonomy( ($key == 'tag') ? 'post_tag' : $key );
+			$result .= $taxonomy->label . ': ' . $data . '; '; 
+		endforeach;
+	endif;
+	return $result;
 }
 
 ?>
