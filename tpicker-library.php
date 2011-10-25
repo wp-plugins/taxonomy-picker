@@ -2,7 +2,7 @@
 
 /* Class-based library
  * Functons shared by the shortcode and widget
- * Version: 1.1
+ * Version: 1.10.10
  */
 
 
@@ -308,10 +308,20 @@ class taxonomy_picker_widget {
 		$this->HTML = $this->before_widget . $this->title;
 		$this->HTML .= '<form method="post" action="'.$_SERVER['REQUEST_URI'].'" class="taxonomy-picker t-picker" id="taxonomy-picker"><ul class="taxonomy-list">';
 		
-		$search_text = ($this->options['search-text']) ? $this->options['search-text'] : __('Search');
+		
+		$search_text = ( isset( $this->options['search-text']) and !empty( $this->options['search-text'] ) ) ? $this->options['search-text'] : __('Search');
+		
+		$search_label = "<label>" . apply_filters('tpicker_search_text',  $search_text ) . "</label>";
+		$labels_after = isset( $this->options['labels_after'] );
 		if( !$this->hidesearch ):
-			$this->HTML .= "<li class='home search first'><label>"  . apply_filters('tpicker_search_text',  $search_text);
-			$this->HTML .= "</label><br/><input name='s' value='' type='text' class'tpicker-search-text'></li>";  // Search text box
+			$this->HTML .= "<li class='home search first'>";
+			if( $labels_after ):
+				$this->HTML .= "<input name='s' value='' type='text' class'tpicker-search-text' />";  // Search text box
+				$this->HTML .=  $search_label . "</li>";
+			else:
+				$this->HTML .= $search_label . "<br/>";
+				$this->HTML .= "<input name='s' value='' type='text' class'tpicker-search-text' /></li>";  // Search text box
+			endif;
 			$css_class="";
 		else:
 			$css_class='first home ';
@@ -320,6 +330,8 @@ class taxonomy_picker_widget {
 		foreach($this->taxonomies as $tax_label => $data_item): 
 			$this->HTML .= $this->build_taxonomy($tax_label, $data_item, $css_class );  // loop taxomomies
 		endforeach;
+		
+		$this->HTML .= apply_filters( 'tpicker_form_after_fields', ""); // Filter taxonomy order
 		
 		$this->HTML .= "<input type='hidden' name='set_categories' value='$set_categories' />";
 		$this->HTML .= "<input type='hidden' name='kate-phizackerley' value='taxonomy-picker' />";
@@ -345,6 +357,8 @@ class taxonomy_picker_widget {
 	    $term_args = $this->term_args; // Read down defaults
 		if( $data_item['orderby'] ) $term_args['orderby'] = $data_item['orderby'];
 		if( $data_item['sort'] ) $term_args['order'] = $data_item['sort'];
+		$labels_after = isset( $this->options['labels_after'] );
+
 				
 		$taxonomy_name = $data_item['name'];
 		$taxonomy = get_taxonomy( $taxonomy_name ); // Get the taxonomy object
@@ -363,8 +377,6 @@ class taxonomy_picker_widget {
 		$css_class .= ( $data_item['orderby'] == 'pruned_tree' ) ? 'tree pruned' : $data_item['orderby'] ; // Set the class for the containing <li>
 		$this->tax_type = $data_item['orderby'];
 	
-		
-		$result .= "<li class='$css_class'><label style='float:left;'>$tax_label</label>";
 		$css_class=''; // After home reset to ''
 					
 		
@@ -406,6 +418,9 @@ class taxonomy_picker_widget {
 
 		endforeach; // Terms
 		
+		$this_label = "<label style='float:left;'>$tax_label</label>";
+		$result .= "<li class='$css_class'>" . ( ($labels_after) ? "" : $this_label );
+
 		switch( $this->combo ):
 
 			
@@ -421,7 +436,7 @@ class taxonomy_picker_widget {
 				$result .=  $this->build_term_select($tax_label, $term, $option_name) ; // Loop through terms in the taxonomy
 			endforeach;
 						
-			$result .= "</select></li>";
+			$result .= "</select>";
 			break;
 
 		case 'jQuery-tree': // Uses http://kotowicz.net/jquery-option-tree/demo/demo.html OptionTree plugin
@@ -442,10 +457,10 @@ class taxonomy_picker_widget {
 
 //			$result .= "});";
 			
-			$result .= "</script></li>";
+			$result .= "</script>";
 			
 		endswitch;
-		
+		$result .= ( ($labels_after) ? $this_label : "" ) . "</li>";
 				
 		return $result;	
 	}

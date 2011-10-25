@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget - Deprecated version
- * Version: 1.10.9
+ * Version: 1.10.10
  */
 
 /* Standardise function for accessing $_GET variables
@@ -150,6 +150,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 		
 	// Get the configuration options from the database
 	$tpicker_options = get_option('taxonomy-picker-options');
+	$labels_after = isset( $tpicker_options['labels_after'] );
 
 	// Upgrade defence for v1.8 - won't be needed long term.  If taxonomies haven't been set, process the instance
 	iF( empty($instance['taxonomies']) )  { $instance = taxonomy_picker_taxonomies_array( $instance ); } // Pre-process the instance for efficiency
@@ -170,8 +171,14 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 	
 	$search_text = ($tpicker_options['search-text']) ? $tpicker_options['search-text'] : __('Search');
 	if( !$instance['hidesearch'] ):
-		$result .= "<li class='home search first'><label>"  . apply_filters('tpicker_search-text',  $search_text);
-		$result .= "</label><br/><input name='s' value='' type='text' style='width:90%;'></li>";  // Search text box
+		$result .= "<li class='home search first'>";
+		if( $labels_after ):
+			$result .= "<input name='s' value='' type='text' style='width:90%;'></li>";  // Search text box
+			$result .= "<label>"  . apply_filters('tpicker_search-text',  $search_text) . "</label><br/>";
+		else:
+			$result .= "<label>"  . apply_filters('tpicker_search-text',  $search_text) . "</label><br/>";
+			$result .= "<input name='s' value='' type='text' style='width:90%;'></li>";  // Search text box
+		endif;
 		$css_class="";
 	else:
 		$css_class='first home ';
@@ -221,9 +228,11 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 				
 		elseif( taxonomy_picker_all_text($tax_label) <> 'N/A' ): // Main live display of combobox
 			$css_class .= $data_item['orderby'];
-			$result .= "<li class='$css_class'><label style='float:left;'>$tax_label</label><select name='$taxonomy_name'>"; 
+			$result .= "<li class='$css_class'>";
 			
-			$result .= "<option value='$taxonomy_name=all'>". taxonomy_picker_all_text($tax_label) ."</option>";
+			if( !$labels_after ) $result .= "<label style='float:left;'>$tax_label</label>"; 
+			$result .= "<select name='$taxonomy_name'><option value='$taxonomy_name=all'>". taxonomy_picker_all_text($tax_label) ."</option>";
+			
 			$css_class=''; // After home reset to ''
 
 			foreach($terms as $term):  // Loop through terms in the taxonomy
@@ -280,13 +289,17 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 				endif;
 			endforeach;
 
-			$result .= "</select></li>";
+			$result .= "</select>";
+			if ( $labels_after ) $result .= "<label style='float:left;'>$tax_label</label>";
+			$result .= "</li>" ;
 			
 		endif; // Hidden?
 		
 	
 	endforeach;
 	unset($taxies);
+	
+	$result .= apply_filters( 'tpicker_form_after_fields', ""); // Filter taxonomy order
 	
 	$result .= "<input type='hidden' name='set_categories' value='$set_categories' />";
 	$result .= "<input type='hidden' name='kate-phizackerley' value='taxonomy-picker' />";

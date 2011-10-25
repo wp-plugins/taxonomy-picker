@@ -1,7 +1,7 @@
 <?php
 
 // PHP for the Taxonomy Picker Admin menu
-// Version: 1.4
+// Version: 1.6
 
 add_action( 'admin_menu', 'kandie_tpicker_menu_initialisation', 20); // Kandie Menu added as 10
 add_action( 'admin_init', 'taxonomy_picker_admin_init', 20 ); 
@@ -67,6 +67,12 @@ function kandie_tpicker_menu_initialisation() {
 	$help_text .= "<dl><dt>Redirect to URL on null search<dt>";
 	$help_text .= "<dd>If the user selects ** All ** (or equivalent) for all taxonomies, output will be redirected to this URL.  Point it to the page which shows all content or your front page etc.  Enter the full URL e.g. http://www.glyphs.info</dd>";
 	
+	$help_text .= "<dl><dt>	Enable post type?<dt>";
+	$help_text .= "<dd>If you need post type support, then click this box.  It should be supported but it is uncertain whether your theme will be able to handle the queries generated</dd>";
+	
+	$help_text .= "<dl><dt>Labels after fields<dt>";
+	$help_text .= "<dd>If you need the labels after the fields (e.g. for languages which read from right to left, select this option, but most people can ignore it</dd>";
+
 	$help_text .= "<dl><dt>Add pre-pack taxonomy support?<dt>";
 	$help_text .= "<dd>Adds additional admin screen which has several pre-packed taxonomies you can use</dd>";
 
@@ -114,8 +120,17 @@ function taxonomy_picker_admin_init() {
 
 	add_settings_field('miss-url','Redirect to URL on null search', 'taxonomy_picker_tpfn', "tpicker-processing-sec","tpicker-processing");				
 
+	add_settings_field( "post_type", 'Enable post type?', 
+				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','post_type');"), "tpicker-processing-sec", "tpicker-processing");
+
+// Easy to add here, but coding a list of post formats needs different code
+/*	add_settings_field( "post_format", 'Enable post format (NB search results not guaranteed)?', 
+				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','post_format');"), "tpicker-processing-sec", "tpicker-processing"); */
 
 	add_settings_section( "tpicker-housekeeping", 'Housekeeping Options', 'tpicker_nothing', "tpicker-housekeeping-sec" );
+
+	add_settings_field( "labels_after", 'Labels after fields?', 
+				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','labels_after');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
 
 	add_settings_field( "taxonomies", 'Add pre-pack taxonomy support?', 
 				create_function('',"kandie_admin_checkbox('taxonomy-picker-options','taxonomies');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");

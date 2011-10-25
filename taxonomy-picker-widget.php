@@ -1,7 +1,7 @@
 <?php
 
-// Version: 1.10.2
-// Builds the Taxonomy Picker widget
+// Version: 1.10.10
+// Builds the Taxonomy Picker widget (incl beta)
 
 add_action('widgets_init','register_phiz_find_helper');
 
@@ -119,6 +119,7 @@ class FindHelperWidget extends WP_Widget {
 
 		// Build taxonomy selection boxes	 	
 		$taxes = get_taxonomies('','names');
+		if( isset($options['post_type'] ) ) $taxes[] = "post_type"; // Option to add post_type
 		if(count($taxes)>0): ?>
 			
 			<fieldset id="taxonomy-picker-taxonomoies"><h3>Taxonomies</h3><div>
@@ -130,7 +131,7 @@ class FindHelperWidget extends WP_Widget {
 			</tr></thead><tbody><?php
 			
 				foreach($taxes as $tax):
-					if( ($tax=='link_category') or ($tax=='nav_menu') or ($tax=='post_format') ) continue;
+					if( ($tax=='link_category') or ($tax=='nav_menu') or ( ($tax=='post_format') and !isset($options['post_format']) ) ) continue;
 					$tax_stem = 'taxonomy_'.$tax;
 					$taxonomy = get_taxonomy($tax);
 					$tax_id = $this->get_field_id($tax_stem);
