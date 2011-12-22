@@ -340,7 +340,8 @@ class taxonomy_picker_widget {
 		if($this->options['remember']):
 			// $this->HTML .= "<p onclick='document.getElementById(\"taxonomy-picker\").reset()';>Clear</p>";  // Sort out in v2.0
 		else:
-			$this->HTML .= '<input type="reset" value="Reset" style="margin-right:10%;" />';
+			$this->HTML .= 	'<input type="reset" value="' .  apply_filters('tpicker_reset', 'Reset' ) . '" style="margin-right:10%;" />';
+
 		endif;
 				
 		$this->HTML .= "<input type='submit' value='$search_text' /></p></form>";

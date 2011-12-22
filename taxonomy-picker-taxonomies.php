@@ -1,6 +1,6 @@
 <?php
 
-//Version: 1.2
+//Version: 1.10.11
 
 $taxonomy_picker_prepacks = explode( "," , "collection,colour,licence,nature,number,product,sex,shape,size,style,what,where,when,who,writer"); // Our prepack taxonomies
 
@@ -51,7 +51,7 @@ function taxonomy_picker_taxonomies_menu_initialisation() {
 	
 	// Auto open the Help Text
 	$options = get_option('taxonomy-picker-options');
-	if( isset($options['auto-help']) ) {$help_text .= kandie_auto_open_help();}
+	if( isset($options['auto-help']) and function_exists('kandie_auto_open_help') ) {$help_text .= kandie_auto_open_help();}
 
 	add_contextual_help( $page , $help_text );
 }

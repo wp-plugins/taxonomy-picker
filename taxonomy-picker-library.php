@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget - Deprecated version
- * Version: 1.10.10
+ * Version: 1.10.11
  */
 
 /* Standardise function for accessing $_GET variables
@@ -308,7 +308,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 	if( isset($tpicker_options['remember']) ):
 		// $result .= "<p onclick='document.getElementById(\"taxonomy-picker\").reset()';>Clear</p>";  // Sort out in v2.0
 	else:
-		$result .= '<input type="reset" value="Reset" style="margin-right:10%;" />';
+		$result .= '<input type="reset" value="' .  apply_filters('tpicker_reset', 'Reset' ) . '" style="margin-right:10%;" />';
 	endif;
 			
 	$result .= "<input type='submit' value='$search_text' /></p></form>";
