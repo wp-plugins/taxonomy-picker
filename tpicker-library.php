@@ -2,7 +2,7 @@
 
 /* Class-based library
  * Functons shared by the shortcode and widget
- * Version: 1.10.10
+ * Version: 1.10.13
  */
 
 
@@ -438,6 +438,19 @@ class taxonomy_picker_widget {
 			endforeach;
 						
 			$result .= "</select>";
+			break;
+
+		case 'radio': // Radio buttons
+
+			if( taxonomy_picker_all_text($tax_label) <> 'N/A' ):	
+				$result .= "<p><input type='radio' name='$taxonomy_name' value='$taxonomy_name=all' />". taxonomy_picker_all_text($tax_label) . "</p>";// ** ALL **
+			endif;
+			foreach($terms as $term): 			
+				$option_name = ($taxonomy_name == 'category' ) ? 'cat='. $term->term_id : $taxonomy_name.'='.$term->slug;		
+				$t_name = $term->name . ( ( $this->options['show-count'] ) ? " ({$term->count})" : "" );
+				$result .= "<p><input type='radio' name='$taxonomy_name' value='$option_name' />". $t_name . "</p>";// ** ALL **
+			endforeach;
+			$result .= "<br/>";			
 			break;
 
 		case 'jQuery-tree': // Uses http://kotowicz.net/jquery-option-tree/demo/demo.html OptionTree plugin

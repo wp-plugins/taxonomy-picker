@@ -83,7 +83,7 @@ function kandie_tpicker_menu_initialisation() {
 	$help_text .= "<dd>The character to use after taxonomy names when the widget is displayed</dd>";
 
 	$help_text .= "<dl><dt>Use beta widget<dt>";
-	$help_text .= "<dd>An upgraded widget is in development.  If you wish to use it, then tick the box.</dd>";
+	$help_text .= "<dd>An upgraded widget is in development.  If you wish to use it, then tick the box.  It includes radio buttom support</dd>";
 
 	$help_text .= "</dl><br/></div>";
 	

@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.10.10
+// Version: 1.10.13
 // Builds the Taxonomy Picker widget (incl beta)
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -100,17 +100,15 @@ class FindHelperWidget extends WP_Widget {
 		
 		// Beta widget extension
 		$options = get_option('taxonomy-picker-options');
-		
-		// Disable in the version for general release
-		
-/*		if( $options['beta-widget'] ):
+				
+		if( !empty($options['beta-widget']) ):
 			echo "<tr><td><select name='" . $this->get_field_name('combo') . "'>";
-			foreach( array('flat','tree') as $combo ):
+			foreach( array('flat','radio') as $combo ):
 				$selected = ( $instance['combo'] == $combo ) ? 'selected=selected' : '' ;
 				echo "<option value='$combo' $selected>" .  ucwords($combo) . "</option>";
 			endforeach;
 			echo "</select></td><td>&nbsp;<label for='$search_id' title='combo'><span  style='font-size:85%;'>Combobox type</span></label><td></td></tr>";
-		endif; */  
+		endif; 
 
 		echo "</tbody></table></fieldset></p><hr>";
 
