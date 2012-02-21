@@ -2,7 +2,7 @@
 
 /* Class-based library
  * Functons shared by the shortcode and widget
- * Version: 1.10.13
+ * Version: 1.10.14
  */
 
 
@@ -81,6 +81,7 @@ function taxonomy_picker_dencode( $input, $direction = 'decode') {
  */
 
 function taxonomy_picker_all_text( $tax_name ) {
+	$tax_name = rstrip_punctuation( $tax_name );
 	$options = get_option('taxonomy-picker-options');
 	$all_text = trim($options['all-format']); // Just in case!
 	$override = trim($options['all-override']); // Just in case!
@@ -89,13 +90,30 @@ function taxonomy_picker_all_text( $tax_name ) {
 	if( substr($all_text ,-6) == '{name}' ):
 		$all_text = str_replace( '{name}', ucfirst($tax_name), $all_text );
 	elseif( substr($all_text ,-7) == '{name}s' ):
-		$all_text = str_replace( '{name}', ucfirst($tax_name), $all_text );
+		$all_text = trim( str_replace( '{name}', ucfirst($tax_name), $all_text ) );
 		if( substr($all_text,-2) == 'ys' ):
 			 $all_text = substr_replace( $all_text, 'ies', -2 ); // ys => ies for neat plurals
 		endif;				
 	endif;
 	
 	return $all_text;
+}
+
+/*	Ensure last letter is alphanumberic
+ *
+ * 	@param	$instance	Array		Array instance of taxonomy picker widget
+ *
+ *	@return String 					Update version of the instance
+ */
+
+function rstrip_punctuation( $txt ) {
+	if( !function_exists( 'ctype_alnum' ) ) return $txt; // Some flavours of PHP don't have ctype_alnum
+	$last_char = substr( $txt, -1);
+	if( !ctype_alnum( $last_char ) ):
+		return substr( $txt, 0, strlen($txt) - 1 );
+	else:
+	 	return $txt;
+	endif;
 }
 
 
