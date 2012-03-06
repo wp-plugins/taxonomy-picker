@@ -13,7 +13,7 @@
  */
  
 function taxonomy_picker_option_set($get_var) {
-	return ( $_GET['kandie_tpicker'] )  ? taxonomy_picker_dencode( $_GET[$get_var], 'decode' ) : '';  // Only return when tpicker is set
+	return ( $_GET['silverghyll_tpicker'] )  ? taxonomy_picker_dencode( $_GET[$get_var], 'decode' ) : '';  // Only return when tpicker is set
 }
 
 /* Return array of saved tpicker options
@@ -22,7 +22,7 @@ function taxonomy_picker_option_set($get_var) {
  */
 
 function taxonomy_picker_tpicker_array() {
-	$tpicker_get = taxonomy_picker_dencode( $_GET['kandie_tpicker'], 'decode' );
+	$tpicker_get = taxonomy_picker_dencode( $_GET['silverghyll_tpicker'], 'decode' );
 	if( $tpicker_get ):
 		$input = explode( '&', $tpicker_get );
 		foreach( $input as $data):
@@ -175,14 +175,13 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 }
 
 
-
 /***
  * If the query was "remembered", returns a representation of the query
  *
  * @return	query string
  */
 function tpicker_query_string() {
-	// Check whether we displaying the results of a prevous use (ie. kandie_tpicker is set)
+	// Check whether we displaying the results of a prevous use (ie. silverghyll_tpicker is set)
 	$tpicker_inputs = taxonomy_picker_tpicker_array();
 	if( empty( $tpicker_inputs ) ):
 		return "";
@@ -194,8 +193,6 @@ function tpicker_query_string() {
 	endif;
 	return $result;
 }
-
-
 
 
                                    /**************************************************/
@@ -224,6 +221,9 @@ class taxonomy_picker_widget {
 	private $tax_type; // Temporary storage of the tree type for the taxonomy while processing
 	private $term_args; // Default term arguments for get_terms
 	
+	private $orderby; // Results order key
+	private $order; // Results order
+	
 	/***
 	 * Builds HTML for a taxonomy picker widget in memory
 	 *
@@ -231,12 +231,12 @@ class taxonomy_picker_widget {
 	 * @param $instance 	array	an instance of a widget or an array in similar form
 	 *								'title' => The widget title
 	 *
-	 * @return string		HTML of the built widget ready for display
+	 * @return true
 	 */
 
 	public function __construct($instance, $args) {
 	
-		// Check whether we displaying the results of a prevous use (ie. kandie_tpicker is set)
+		// Check whether we displaying the results of a prevous use (ie. silverghyll_tpicker is set)
 		$this->inputs = apply_filters('tpicker_inputs', taxonomy_picker_tpicker_array() );
 		
 		// Get the configuration options from the database
@@ -310,6 +310,10 @@ class taxonomy_picker_widget {
 		endswitch;
 		$this->term_args['pad_counts'] = 1;
 		
+		// Add options for optional ordering of results
+		$this->orderby = ($instance['results_orderby']) ? $instance['results_orderby'] : '_default'; // Default value for people upgrading from earlier widget versions
+		$this->order = ($instance['results_order']) ? $instance['results_order'] : '_DESC';
+		
 		return true; 
 	}
 
@@ -348,9 +352,34 @@ class taxonomy_picker_widget {
 		foreach($this->taxonomies as $tax_label => $data_item): 
 			$this->HTML .= $this->build_taxonomy($tax_label, $data_item, $css_class );  // loop taxomomies
 		endforeach;
-		
+				
+		// Add sort order options
+		if($this->orderby <> '_default'):
+			if($this->orderby == '_choice'):
+				$labels_after =isset( $this->options['labels_after'] );
+				$this_label = "<label style='float:left;'>Order By</label>"; // Punctuation needed
+				$this->HTML .= "<li>" . ( ($labels_after) ? "" : $this_label ) . "<br><select name='orderby'>";	
+				
+				/* 
+					Consolidate code to add radio buttons & Add Remembrance
+					******************************************************* */
+				
+				foreach( array('author', 'comment_count', 'date','ID', 'modified', 'title') as $item):
+					if( $this->options["results_sort_$item"] ):
+						$item_text = str_replace( '_', ' ', ucfirst( $item) );
+						$this->HTML .= "<option value='orderby=$item'>$item_text</option>";
+					endif;
+				endforeach;
+				$this->HTML .= "</select><br/><select name='order'><option value='order=ASC'>Ascending</option><option value='order=DSC'>Descending</option></select>";
+			else:
+				$this->HTML .= "<input type='hidden' name='orderby' value='orderby=$this->orderby' /><input type='hidden' name='order' value='order=$this->order' />";	
+			endif;
+		endif;
+
+		// Filter so developers can add additional fields
 		$this->HTML .= apply_filters( 'tpicker_form_after_fields', ""); // Filter taxonomy order
 		
+		// Add standard hidden fields and close up
 		$this->HTML .= "<input type='hidden' name='set_categories' value='$set_categories' />";
 		$this->HTML .= "<input type='hidden' name='kate-phizackerley' value='taxonomy-picker' />";
 		$this->HTML .= '<li style="height:8px;" class="last"></li></ul><p style="text-align:center;margin:0 auto;">';
@@ -390,7 +419,7 @@ class taxonomy_picker_widget {
 			$terms = get_tags($term_args);
 			$taxonomy_name = 'tag';
 		else:
-			$terms = ( substr($data_item['orderby'],-4) == 'tree' ) ? kandie_get_terms_tree( $taxonomy_name, $term_args ) : get_terms($taxonomy_name, $term_args );
+			$terms = ( substr($data_item['orderby'],-4) == 'tree' ) ? silverghyll_get_terms_tree( $taxonomy_name, $term_args ) : get_terms($taxonomy_name, $term_args );
 		endif;
 
 		$css_class .= ( $data_item['orderby'] == 'pruned_tree' ) ? 'tree pruned' : $data_item['orderby'] ; // Set the class for the containing <li>

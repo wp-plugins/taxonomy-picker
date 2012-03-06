@@ -1,7 +1,7 @@
 <?php
 
 // Tidy up the POST output of the Taxonomy Widget form to pass to the blog homepage via URI to drive normal searching behaviour
-// Version: 1.10.2
+// Version: 1.11.2
 
 function taxonomy_picker_process() {  // Build a URI form the data POSTed by the widget form
 
@@ -24,7 +24,8 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 					$custom_query .= ( ($custom_query) ? '&' : '' ) . strtok( $clean_data, '=' ) . '=' . sanitize_title(strtok("=")); // eg add &writer=Kate-Phizackerley
 
 				elseif($clean_item == 'category'): // For All categories we need to restrict search to the specified in the dashbaord
-					$custom_query .= taxonomy_picker_decode( $_POST['set_categories'] );  // Already prepared for use as comma delim set of cat ids before POSTing
+					$custom_query .= ( ($custom_query) ? '&' : '' ) . 
+							taxonomy_picker_decode( $_POST['set_categories'] );  // Already prepared for use as comma delim set of cat ids before POSTing
 				endif;
 			endif;
 		endforeach;
@@ -37,7 +38,7 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 		$tpoptions = get_option('taxonomy-picker-options');
 
 		if($custom_query):  // We have a search string
-			if( $tpoptions['remember'] == 'on') $custom_query .= '&kandie_tpicker=' . taxonomy_picker_encode($custom_query);  // Save our query for defaulting widget
+			if( $tpoptions['remember'] == 'on') $custom_query .= '&silverghyll_tpicker=' . taxonomy_picker_encode($custom_query);  // Save our query for defaulting widget
 			$blog_url = get_bloginfo('url');
 			$blog_url = (($blog_url[-1] == '/') ? $blog_url : $blog_url . '/').'?'.$custom_query;  // Our composite URL for searching
 		elseif( $tpoptions['miss-url'] ):
@@ -46,7 +47,7 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 			$blog_url = get_bloginfo('url');			
 		endif;
 		
-		$blog_url = apply_filters('tpicker-built-uri', $blog_url);
+		$blog_url = apply_filters('silverghyll', $blog_url);
 	
 		wp_redirect($blog_url, 302 );  // Redirect to the built URI
 		die();

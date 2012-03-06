@@ -9,7 +9,7 @@ Author: Kate Phizackerley
 Requires at least: 3.1
 Tested up to: 3.3.1
 Stable tag: trunk
-Version: 1.10.14
+Version: 1.11.2
 
 Add a widget to help your readers build custom queries using drop downs of your categories and custom taxonomies.  The latest version comes with a fully optional set of pre-packed custom taxonomies for anybody who wants additional "cartegories" or sets of "tags" without coding - the names are customisable.
 
@@ -38,6 +38,9 @@ Download the and activate the plugin the usual way.  The new widget will then be
 
 
 == Upgrade Notice ==
+= 1.11.2 =
+Fix bug if category not first taxonomy.  Futher development of beta widget
+
 = 1.10.9 =
 Additional filter and an new option to display labels after fields
 

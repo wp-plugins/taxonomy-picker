@@ -7,7 +7,7 @@ Results will be displayed using your theme's standard search form so the results
 
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.10.14
+ * Version: 1.11.2
  *
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
@@ -18,10 +18,10 @@ Results will be displayed using your theme's standard search form so the results
  * @package TaxomomyPicker
  */
 
-/** Defintitions & Kandie Library **
+/** Defintitions & Silverghyll Library **
 ************************************/
 if( !defined('TPICKER_DIR') ) define('TPICKER_DIR', trailingslashit(dirname(__FILE__)) );
-if( !function_exists('kandie_debug_status') ) require_once (TPICKER_DIR.'kandie-library/kandie-foundation.php');  // Add Kandie debug & versioning support
+if( !function_exists('silverghyll_debug_status') ) require_once (TPICKER_DIR.'silverghyll-library/silverghyll-foundation.php');  // Add silverghyll debug & versioning support
 add_action( 'init', 'taxonomy_picker_enqueue' );  // Enqueue the stylesheet and any scripts
 
 function taxonomy_picker_enqueue() {
@@ -45,9 +45,9 @@ function taxonomy_picker_enqueue() {
 *************/
 $tpicker_options = get_option('taxonomy-picker-options');
 
-include_once(TPICKER_DIR. ( ($tpicker_options['beta-widget'] ) ? 't' : 'taxonomy-' ) . 'picker-library.php');  // Use required library version
+require_once(TPICKER_DIR. ( ($tpicker_options['premium-widget'] ) ? 't' : 'taxonomy-' ) . 'picker-library.php');  // Use required library version
+require_once(TPICKER_DIR. ( ($tpicker_options['premium-widget'] ) ? 't' : 'taxonomy-' ) . 'picker-widget.php');  // Build and display the widget
 
-require_once(TPICKER_DIR.'taxonomy-picker-widget.php');  // Build and display the widget
 if( (!empty($tpicker_options)) and (array_key_exists('taxonomies', $tpicker_options)) ) include_once(TPICKER_DIR.'taxonomy-picker-taxonomies.php');  // Add pre-built taxonomies
 
 unset( $tpicker_options ); // Avoid hanging around in global scope
@@ -67,7 +67,7 @@ if(!is_admin()): //only on the front of the blog
 */
 
 else:
-	require_once( kandie_include_best_library('kandie-admin-menu.php') ); // Kandie admin menu extensions - include most recent in any plugin
+	require_once( silverghyll_include_best_library('silverghyll-admin-menu.php') ); // silverghyll admin menu extensions - include most recent in any plugin
 	require_once(TPICKER_DIR.'taxonomy-picker-admin.php'); // Admin panel extensions for Taxonomy Picker
 	register_activation_hook(__FILE__, 'taxonomy_picker_default');  // Plugin activation
 endif;

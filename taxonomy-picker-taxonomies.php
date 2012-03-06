@@ -1,13 +1,13 @@
 <?php
 
-//Version: 1.10.11
+//Version: 1.11.2
 
 $taxonomy_picker_prepacks = explode( "," , "collection,colour,licence,nature,number,product,sex,shape,size,style,what,where,when,who,writer"); // Our prepack taxonomies
 
 add_action( 'init', 'taxonomy_picker_create_taxonomies', 0 );
 add_action( 'admin_init', 'taxonomy_picker_taxonomies_init', 20 ); 
 add_action( 'admin_init', 'taxonomy_picker_admin_init', 21 ); 
-add_action( 'admin_menu', 'taxonomy_picker_taxonomies_menu_initialisation', 30); // Kandie Menu added as 10, Main Taxomomy Picker as 20
+add_action( 'admin_menu', 'taxonomy_picker_taxonomies_menu_initialisation', 30); // Silverghyll Menu added as 10, Main Taxomomy Picker as 20
 
 
 

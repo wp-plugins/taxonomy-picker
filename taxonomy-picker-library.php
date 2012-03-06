@@ -10,7 +10,7 @@
  */
  
 function taxonomy_picker_option_set($get_var) {
-	return ( $_GET['kandie_tpicker'] )  ? taxonomy_picker_dencode( $_GET[$get_var], 'decode' ) : '';  // Only return when tpicker is set
+	return ( $_GET['silverghyll_tpicker'] )  ? taxonomy_picker_dencode( $_GET[$get_var], 'decode' ) : '';  // Only return when tpicker is set
 }
 
 /* Return array of saved tpicker options
@@ -19,8 +19,8 @@ function taxonomy_picker_option_set($get_var) {
  */
 
 function taxonomy_picker_tpicker_array() {
-	if( !isset( $_GET['kandie_tpicker'] ) ) return null; 
-	$tpicker_get = taxonomy_picker_dencode( $_GET['kandie_tpicker'], 'decode' );
+	if( !isset( $_GET['silverghyll_tpicker'] ) ) return null; 
+	$tpicker_get = taxonomy_picker_dencode( $_GET['silverghyll_tpicker'], 'decode' );
 	if( $tpicker_get ):
 		$input = explode( '&', $tpicker_get );
 		foreach( $input as $data):
@@ -164,7 +164,7 @@ function taxonomy_picker_taxonomies_array( $instance ) {
 
 function taxonomy_picker_display_widget( $instance, $args = null ) {
 		
-	// Check whether we displaying the results of a prevous use (ie. kandie_tpicker is set)
+	// Check whether we displaying the results of a prevous use (ie. silverghyll_tpicker is set)
 	$tpicker_inputs = taxonomy_picker_tpicker_array();
 		
 	// Get the configuration options from the database
@@ -239,7 +239,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 			$terms = get_tags($term_args);
 			$taxonomy_name="tag";
 		else: 
-			$terms = ( $data_item['orderby'] == 'tree' ) ? kandie_get_terms_tree( $taxonomy_name, $term_args ) : get_terms($taxonomy_name, $term_args );
+			$terms = ( $data_item['orderby'] == 'tree' ) ? silverghyll_get_terms_tree( $taxonomy_name, $term_args ) : get_terms($taxonomy_name, $term_args );
 		endif;
 
 		if( $data_item['hidden'] ):
@@ -358,7 +358,7 @@ function taxonomy_picker_widget_select_option( $option_name, $option_label, $sel
  * @return	query string
  */
 function tpicker_query_string() {
-	// Check whether we displaying the results of a prevous use (ie. kandie_tpicker is set)
+	// Check whether we displaying the results of a prevous use (ie. silverghyll_tpicker is set)
 	$tpicker_inputs = taxonomy_picker_tpicker_array();
 	if( empty( $tpicker_inputs ) ):
 		return "";
