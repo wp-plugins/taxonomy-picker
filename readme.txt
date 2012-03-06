@@ -38,8 +38,9 @@ Download the and activate the plugin the usual way.  The new widget will then be
 
 
 == Upgrade Notice ==
-= 1.11.2 =
+= 1.11.3 =
 Fix bug if category not first taxonomy.  Futher development of beta widget
+
 
 = 1.10.9 =
 Additional filter and an new option to display labels after fields

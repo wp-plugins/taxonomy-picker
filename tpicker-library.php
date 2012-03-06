@@ -2,7 +2,7 @@
 
 /* Class-based library
  * Functons shared by the shortcode and widget
- * Version: 1.10.14
+ * Version: 1.11.3
  */
 
 
@@ -209,7 +209,7 @@ class taxonomy_picker_widget {
 	
 	private $set_categories;
 	private $choose_categories;
-	private $this_categories;
+	private $categories;
 	
 	private $HTML = ''; // HTML of the widget 	
 	private $before_widget = '<div class="widget taxonomy-picker widget-taxonomy-picker"><div class="widget-inside">';	
@@ -273,9 +273,13 @@ class taxonomy_picker_widget {
 		// Limit list of categories
 		if($this->choose_categories=='I'):  // Only allow specified categories
 			$set_categories = 'cat=' . $instance['set_categories']; // We can pass it as is because it will become the list of all categories for query_posts
+			
+			$cats = explode( ',', $instance['set_categories']); // Should be a list of cat IDs
+				
 			foreach($cats as $cat):  // Test against each of our permitted categories
-				$this->categories[$cat] = get_term( $cat, 'category' );  // Add individual categories to the array
+				$this->categories[$cat] = get_term_by( 'ID', $cat, 'category' );  // Add individual categories to the array
 			endforeach;
+			
 		elseif($instance['choose_categories']=='E'): // Reject specified categories
 			$set_categories = 'cat=-'.str_replace(',',',-',$instance['set_categories']); // Prefix each cat id with - to exclude it
 			$all_cats[] = get_terms('category' );  // Add individual categories to the array
