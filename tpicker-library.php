@@ -2,7 +2,7 @@
 
 /* Class-based library
  * Functons shared by the shortcode and widget
- * Version: 1.11.3
+ * Version: 1.11.4
  */
 
 
@@ -214,8 +214,8 @@ class taxonomy_picker_widget {
 	private $HTML = ''; // HTML of the widget 	
 	private $before_widget = '<div class="widget taxonomy-picker widget-taxonomy-picker"><div class="widget-inside">';	
 	private $after_widget = '</div></div>';
-	private $before_title = '';	
-	private $after_title = '';
+	private $before_title = '<h3 class="widget-title">';	
+	private $after_title = '</h3>';
 	private $title = '';
 	private $hidesearch = false; 
 	private $tax_type; // Temporary storage of the tree type for the taxonomy while processing
@@ -258,8 +258,8 @@ class taxonomy_picker_widget {
 	
 		if( $args ) extract( $args); // Unpack $before_widget etc
 		
-		$title = apply_filters('widget_title', $instance['title'] );		
-		if($title) $title = $before_title.$title.$after_title;	// Wrap it
+		$this->title = apply_filters('widget_title', $instance['title'] );		
+		if($this->title) $this->title = $this->before_title . $this->title . $this->after_title;	// Wrap it
 		
 		$this->before_widget = apply_filters('tpicker_before' , ( ($before_widget) ? $before_widget : $this->before_widget ) );
 		$this->after_widget = apply_filters('tpicker_after' , ( ($after_widget) ? $after_widget : $this->after_widget ) );
