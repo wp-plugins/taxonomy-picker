@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget - Deprecated version
- * Version: 1.10.14
+ * Version: 1.11.5
  */
 
 /* Standardise function for accessing $_GET variables
@@ -141,7 +141,7 @@ function taxonomy_picker_taxonomies_array( $instance ) {
 			$taxonomy_name = substr($key,4); 
 			$taxonomy_value = $data_item;
 			// Store in a temporary array
-			if( $taxonomy_value <> ($taxonomy_name . '=all' ) ):
+			if( $taxonomy_value <> ($taxonomy_name . '=tp-all' ) ):
 				$fixes[$taxonomy_name] = Array( 'name' => $taxonomy_name, 'value' => $taxonomy_value, 'hidden' => ' hidden' );
 			endif;
 		endif;
@@ -250,7 +250,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 			$result .= "<li class='$css_class'>";
 			
 			if( !$labels_after ) $result .= "<label style='float:left;'>$tax_label</label>"; 
-			$result .= "<select name='$taxonomy_name'><option value='$taxonomy_name=all'>". taxonomy_picker_all_text($tax_label) ."</option>";
+			$result .= "<select name='$taxonomy_name'><option value='$taxonomy_name=tp-all'>". taxonomy_picker_all_text($tax_label) ."</option>";
 			
 			$css_class=''; // After home reset to ''
 
@@ -330,7 +330,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 		$result .= '<input type="reset" value="' .  apply_filters('tpicker_reset', 'Reset' ) . '" style="margin-right:10%;" />';
 	endif;
 			
-	$result .= "<input type='submit' value='$search_text' /></p></form>";
+	$result .= "<input type='submit' value='$search_text' class='tpicker-submit'/></p></form>";
 	
 	$result .= $after_widget;	
 	

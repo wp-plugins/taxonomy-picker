@@ -2,7 +2,7 @@
 
 /* Class-based library
  * Functons shared by the shortcode and widget
- * Version: 1.11.4
+ * Version: 1.11.5
  */
 
 
@@ -148,7 +148,7 @@ function taxonomy_picker_taxonomies_array( $instance ) {
 			$taxonomy_name = substr($key,4); 
 			$taxonomy_value = $data_item;
 			// Store in a temporary array
-			if( $taxonomy_value <> ($taxonomy_name . '=all' ) ):
+			if( $taxonomy_value <> ($taxonomy_name . '=tp-all' ) ):
 				$fixes[$taxonomy_name] = Array( 'name' => $taxonomy_name, 'value' => $taxonomy_value, 'hidden' => ' hidden' );
 			endif;
 		endif;
@@ -395,7 +395,7 @@ class taxonomy_picker_widget {
 
 		endif;
 				
-		$this->HTML .= "<input type='submit' value='$search_text' /></p></form>";
+		$this->HTML .= "<input type='submit' value='$search_text' class='tpicker-submit' /></p></form>";
 		
 		$this->HTML .= $this->after_widget;	
 		
@@ -481,7 +481,7 @@ class taxonomy_picker_widget {
 
 			$result .= "<select name='$taxonomy_name'>"; 
 			if( taxonomy_picker_all_text($tax_label) <> 'N/A' ):	
-				$result .= "<option value='$taxonomy_name=all'>". taxonomy_picker_all_text($tax_label) ."</option>";// ** ALL **
+				$result .= "<option value='$taxonomy_name=tp-all'>". taxonomy_picker_all_text($tax_label) ."</option>";// ** ALL **
 			endif;
 			foreach($terms as $term): 
 				$option_name = ($taxonomy_name == 'category' ) ? 'cat='. $term->term_id : $taxonomy_name.'='.$term->slug;
@@ -494,7 +494,7 @@ class taxonomy_picker_widget {
 		case 'radio': // Radio buttons
 
 			if( taxonomy_picker_all_text($tax_label) <> 'N/A' ):	
-				$result .= "<p><input type='radio' name='$taxonomy_name' value='$taxonomy_name=all' />". taxonomy_picker_all_text($tax_label) . "</p>";// ** ALL **
+				$result .= "<p><input type='radio' name='$taxonomy_name' value='$taxonomy_name=tp-all' />". taxonomy_picker_all_text($tax_label) . "</p>";// ** ALL **
 			endif;
 			foreach($terms as $term): 			
 				$option_name = ($taxonomy_name == 'category' ) ? 'cat='. $term->term_id : $taxonomy_name.'='.$term->slug;		

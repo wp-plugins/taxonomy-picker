@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.11.2
+// Version: 1.11.5
 // Builds the Standard Taxonomy Picker widget 
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -128,7 +128,7 @@ class FindHelperWidget extends WP_Widget {
 
 						$select_name = $this->get_field_name("fix_".$tax);
 						$tax_select  = "<select name='$select_name' style='width:90%;font-size:85%;'>";
-						$tax_select .= "<option value='$taxonomy->name=all'>".taxonomy_picker_all_text($tax_label)."</option>";
+						$tax_select .= "<option value='$taxonomy->name=tp-all'>".taxonomy_picker_all_text($tax_label)."</option>";
 						foreach($terms as $term): // Loop through the terms to build the options
 							$option_name = $taxonomy->name.'='.$term->slug;
 							$selected = ($instance['fix_'.$tax] == $option_name) ? 'selected="selected"' : '';

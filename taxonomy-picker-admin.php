@@ -1,7 +1,7 @@
 <?php
 
 // PHP for the Taxonomy Picker Admin menu
-// Version: 1.11.2
+// Version: 1.11.5
 
 add_action( 'admin_menu', 'silverghyll_tpicker_menu_initialisation', 20); // silverghyll Menu added as 10
 add_action( 'admin_init', 'taxonomy_picker_admin_init', 20 ); 
@@ -92,7 +92,10 @@ function taxonomy_picker_admin_init() {
 	if( $tpicker_options['premium-widget'] ):
 
 		add_settings_section( "tpicker-results", 'Results Handling', 'tpicker_nothing', "tpicker-results-sec" );
-	
+
+/*		add_settings_field( "taxonomies", 'Sort taxonomies using Priority field?', 
+					create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','sort-priority');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
+*/
 		foreach( array('author', 'comment_count', 'date','ID', 'modified', 'title') as $item):
 				add_settings_field( "results_sort_$item", "Allow sort by $item?", 
 							create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','results_sort_$item');"), "tpicker-results-sec", "tpicker-results") ; 

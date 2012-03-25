@@ -1,7 +1,7 @@
 <?php
 
 // Tidy up the POST output of the Taxonomy Widget form to pass to the blog homepage via URI to drive normal searching behaviour
-// Version: 1.11.2
+// Version: 1.11.5
 
 function taxonomy_picker_process() {  // Build a URI form the data POSTed by the widget form
 
@@ -19,7 +19,7 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 			$clean_item = taxonomy_picker_decode($item);
 			
 			if($clean_item <> 'set_categories' and $clean_item <> 's' and $clean_item <> 'kate-phizackerley'): // We have a result from a combo box						
-				if(strpos($data,'=all') === false):  // Specific taxonomy picked
+				if(strpos($data,'=tp-all') === false):  // Specific taxonomy picked
 
 					$custom_query .= ( ($custom_query) ? '&' : '' ) . strtok( $clean_data, '=' ) . '=' . sanitize_title(strtok("=")); // eg add &writer=Kate-Phizackerley
 
@@ -47,7 +47,7 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 			$blog_url = get_bloginfo('url');			
 		endif;
 		
-		$blog_url = apply_filters('silverghyll', $blog_url);
+		$blog_url = apply_filters('tpicker_redirect', $blog_url);
 	
 		wp_redirect($blog_url, 302 );  // Redirect to the built URI
 		die();

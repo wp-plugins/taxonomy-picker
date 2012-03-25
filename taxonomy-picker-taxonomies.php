@@ -1,14 +1,13 @@
 <?php
 
-//Version: 1.11.2
+//Version: 1.11.5
 
-$taxonomy_picker_prepacks = explode( "," , "collection,colour,licence,nature,number,product,sex,shape,size,style,what,where,when,who,writer"); // Our prepack taxonomies
+$taxonomy_picker_prepacks = explode( "," , "collection,colour,gallery,images,licence,nature,number,product,sex,shape,size,style,what,where,when,who,writer"); // Our prepack taxonomies
 
 add_action( 'init', 'taxonomy_picker_create_taxonomies', 0 );
 add_action( 'admin_init', 'taxonomy_picker_taxonomies_init', 20 ); 
 add_action( 'admin_init', 'taxonomy_picker_admin_init', 21 ); 
 add_action( 'admin_menu', 'taxonomy_picker_taxonomies_menu_initialisation', 30); // Silverghyll Menu added as 10, Main Taxomomy Picker as 20
-
 
 
 /* Taxonomies
@@ -23,7 +22,10 @@ function taxonomy_picker_create_taxonomies() {
 		if( isset($taxonomy_options["tax:$tax-show"]) ):
 		
 			$label = $taxonomy_options["tax:$tax-label"];
+			
+			
 			if( !$label) $label = ucwords($tax) . ( ( $tax[0] == 'w' ) ? '?' : '' );
+
 			if( isset($taxonomy_options["tax:$tax-hier"]) ) $hierarchical = ($taxonomy_options["tax:$tax-hier"])? true : false; else $hierarchical = false;
 			$args = array( 'hierarchical' => $hierarchical , 'label' => $label, 'query_var' => true, 'rewrite' => true );
 			register_taxonomy( $tax, 'post', $args );
@@ -39,21 +41,8 @@ function taxonomy_picker_create_taxonomies() {
 
 // Adds the Taxonomy Picker admin menu in the Kandie section
 function taxonomy_picker_taxonomies_menu_initialisation() {
-	$page = add_submenu_page( 'kandie-admin-menu.php', 'Prepack Taxonomies', 'Prepack Taxonomies', 'administrator', __FILE__, 'taxonomy_picker_create_taxonomies_menu' );
-	add_action( 'admin_print_styles-' . $page, 'kandie_girls_admin_styles' ); // Add our admin style sheet
-
-	$help_text = '<div class="kandie-help-text">';
-		
-	// Help text for the main options
-	$help_text .= "Specify any additional custom taxonomies you wish to use.  These are entirely option.  Taxonomy Picker works with any custom taxonmies you create yourself and these are just provided as a convenience for those who don't wish to write the code themeselves.";
-		
-	$help_text .= "<br/></div>";
-	
-	// Auto open the Help Text
-	$options = get_option('taxonomy-picker-options');
-	if( isset($options['auto-help']) and function_exists('kandie_auto_open_help') ) {$help_text .= kandie_auto_open_help();}
-
-	add_contextual_help( $page , $help_text );
+	$page = add_submenu_page( 'silverghyll-admin-menu.php', 'Prepack Taxonomies', 'Prepack Taxonomies', 'administrator', __FILE__, 'taxonomy_picker_create_taxonomies_menu' );
+	add_action( 'admin_print_styles-' . $page, 'silverghyll_girls_admin_styles' ); // Add our admin style sheet
 }
 
 
@@ -68,11 +57,11 @@ function taxonomy_picker_taxonomies_init() {
 		
 		add_settings_section( "$tp-$tax", ucfirst($tax) . " (prepack)", 'tpicker_nothing', __FILE__);		
 		add_settings_field( "tax:$tax-show", "Enable", 
-				create_function('',"kandie_admin_checkbox('$tp','tax:$tax-show');"), __FILE__, "$tp-$tax");
+				create_function('',"silverghyll_admin_checkbox('$tp','tax:$tax-show');"), __FILE__, "$tp-$tax");
 		add_settings_field( "tax:$tax-hier", "Hierarchical?", 
-				create_function('',"kandie_admin_checkbox('$tp','tax:$tax-hier');"), __FILE__, "$tp-$tax");
+				create_function('',"silverghyll_admin_checkbox('$tp','tax:$tax-hier');"), __FILE__, "$tp-$tax");
 		add_settings_field("tax:$tax-label","Label (default = " . ucwords($tax) . ( ( $tax[0] == 'w' ) ? '?' : '' ) . ")" , 
-				create_function('', "kandie_admin_textbox( 'taxonomy-picker-taxonomies', 'tax:$tax-label', 20);"), __FILE__, "$tp-$tax");				
+				create_function('', "silverghyll_admin_textbox( '$tp', 'tax:$tax-label', 20);"), __FILE__, "$tp-$tax");				
 	endforeach;
 
 }
@@ -89,8 +78,8 @@ function taxonomy_picker_taxonomies_validate($input) {
 function taxonomy_picker_create_taxonomies_menu(){
 	global $taxonomy_picker_prepacks;
 
-	$kandie_plugins = get_kandie_plugins();
-	$taxonomy_plugin = $kandie_plugins['Taxonomy Picker']; // The readme.txt details for Taxonomy Picker
+	$silverghyll_plugins = get_silverghyll_plugins();
+	$taxonomy_plugin = $silverghyll_plugins['Taxonomy Picker']; // The readme.txt details for Taxonomy Picker
 	$tp = 'taxonomy-picker-taxonomies'; // just a convenient shorthand 
 	
 	?>

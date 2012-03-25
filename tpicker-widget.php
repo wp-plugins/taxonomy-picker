@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.11.2
+// Version: 1.11.5
 // Builds the Premium TPicker widget
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -153,64 +153,75 @@ class FindHelperWidget extends WP_Widget {
 		// Build taxonomy selection boxes	 	
 		$taxes = get_taxonomies('','names');
 		if( isset($options['post_type'] ) ) $taxes[] = "post_type"; // Option to add post_type
-		if(count($taxes)>0): ?>
+		if(count($taxes)>0): 
 			
+			$priority_name = ( isset($options['sort-priority'] ) ) ? '<td><strong>Priority</strong></td>' : '';
+
+			?>
 			<fieldset id="taxonomy-picker-taxonomoies"><h3>Taxonomies</h3><div>
 			<table  style="width:400px;"><thead><tr>
 				<td><strong>Taxonomy</strong></td>
 				<td><strong>Fix/Initial</strong></td>
 				<td><strong>Order By</strong></td>
-				<td><strong>Sort</strong></td>
+				<td><strong>Sort</strong>
+				</td><?php echo $priority_name; ?>
 			</tr></thead><tbody><?php
 			
-				foreach($taxes as $tax):
-					if( ($tax=='link_category') or ($tax=='nav_menu') or ( ($tax=='post_format') and !isset($options['post_format']) ) ) continue;
-					$tax_stem = 'taxonomy_'.$tax;
-					$taxonomy = get_taxonomy($tax);
-					$tax_id = $this->get_field_id($tax_stem);
-					$tax_name = $this->get_field_name($tax_stem);
-					$radio_checked = ($instance[$tax_stem]=='on') ? 'checked ' : '';
-					
-					if($tax <> 'category'): // Custom taxonomy - build fix/initial value combobox
-						$terms = get_terms($taxonomy->name, array('orderby'=>'name'));
+			foreach($taxes as $tax):
+				if( ($tax=='link_category') or ($tax=='nav_menu') or ( ($tax=='post_format') and !isset($options['post_format']) ) ) continue;
+				$tax_stem = 'taxonomy_'.$tax;
+				$taxonomy = get_taxonomy($tax);
+				$tax_id = $this->get_field_id($tax_stem);
+				$tax_name = $this->get_field_name($tax_stem);
+				$radio_checked = ($instance[$tax_stem]=='on') ? 'checked ' : '';
+				
+				if($tax <> 'category'): // Custom taxonomy - build fix/initial value combobox
+					$terms = get_terms($taxonomy->name, array('orderby'=>'name'));
 
-						$select_name = $this->get_field_name("fix_".$tax);
-						$tax_select  = "<select name='$select_name' style='width:90%;font-size:85%;'>";
-						$tax_select .= "<option value='$taxonomy->name=all'>".taxonomy_picker_all_text($tax_label)."</option>";
-						foreach($terms as $term): // Loop through the terms to build the options
-							$option_name = $taxonomy->name.'='.$term->slug;
-							$selected = ($instance['fix_'.$tax] == $option_name) ? 'selected="selected"' : '';
-							$tax_select .= "<option value='$option_name' $selected>$term->name</option>";
-						endforeach;
-						$tax_select .= "</select>";
-						
-						// Orderby comboboxes
-						$select_name = $this->get_field_name("orderby_".$tax);
-						$order_select  = "<select name='$select_name' style='width:90%;font-size:90%;'>";
-											
-						$orders =array('name','slug','id','count','tree');  
-						if( $options['beta-widget'] ) $orders[]='pruned_tree';
-						foreach( $orders as $order):
-							$selected = ($instance['orderby_'.$tax] == $order) ? 'selected="selected"' : '';
-							$select_label = ($order=='name') ? 'Label' : ucwords( str_replace('_',' ',$order) );
-							$order_select .= "<option value='$order' $selected>$select_label</option>";
-						endforeach;
-						unset($orders, $order);
-
-						// Sort order comboboxes
-						$select_name = $this->get_field_name("sort_".$tax);
-						$sort_select  = "<select name='$select_name' style='width:90%;font-size:90%;'>";
-						foreach( array('Asc','Desc') as $term):
-							$selected = ($instance['sort_'.$tax] == $term) ? 'selected="selected"' : '';
-							$sort_select .= "<option value='$term' $selected>$term</option>";
-						endforeach;
-						
-					endif;
+					$select_name = $this->get_field_name("fix_".$tax);
+					$tax_select  = "<select name='$select_name' style='width:90%;font-size:85%;'>";
+					$tax_select .= "<option value='$taxonomy->name=tp-all'>".taxonomy_picker_all_text($tax_label)."</option>";
+					foreach($terms as $term): // Loop through the terms to build the options
+						$option_name = $taxonomy->name.'='.$term->slug;
+						$selected = ($instance['fix_'.$tax] == $option_name) ? 'selected="selected"' : '';
+						$tax_select .= "<option value='$option_name' $selected>$term->name</option>";
+					endforeach;
+					$tax_select .= "</select>";
 					
-					echo "<tr><td><input id='$tax_id' class='checkbox' type='checkbox' name='$tax_name' $radio_checked />";
-					echo "&nbsp;<label for='$tax_id' title='$tax_stem'><span  style='font-size:85%;'>$taxonomy->label</span></label></td>";
-					echo "<td>$tax_select</td><td>$order_select</td><td>$sort_select</td></tr>";
-				endforeach;
+					// Orderby comboboxes
+					$select_name = $this->get_field_name("orderby_".$tax);
+					$order_select  = "<select name='$select_name' style='width:90%;font-size:90%;'>";
+										
+					$orders =array('name','slug','id','count','tree');  
+					if( $options['beta-widget'] ) $orders[]='pruned_tree';
+					foreach( $orders as $order):
+						$selected = ($instance['orderby_'.$tax] == $order) ? 'selected="selected"' : '';
+						$select_label = ($order=='name') ? 'Label' : ucwords( str_replace('_',' ',$order) );
+						$order_select .= "<option value='$order' $selected>$select_label</option>";
+					endforeach;
+					unset($orders, $order);
+
+					// Sort order comboboxes
+					$select_name = $this->get_field_name("sort_".$tax);
+					$sort_select  = "<select name='$select_name' style='width:90%;font-size:90%;'>";
+					foreach( array('Asc','Desc') as $term):
+						$selected = ($instance['sort_'.$tax] == $term) ? 'selected="selected"' : '';
+						$sort_select .= "<option value='$term' $selected>$term</option>";
+					endforeach;
+
+					// Priority inputs
+					if( isset($options['sort-priority'] ) ): // Only show priority field if required
+						$select_name = $this->get_field_name("priority_".$tax);
+						$priority_input  = "<td><input name='$select_name' style='width:60px;font-size:90%;'></td>";
+					else:
+						$priority_input = '';
+					endif;						
+				endif;
+				
+				echo "<tr><td><input id='$tax_id' class='checkbox' type='checkbox' name='$tax_name' $radio_checked />";
+				echo "&nbsp;<label for='$tax_id' title='$tax_stem'><span  style='font-size:85%;'>$taxonomy->label</span></label></td>";
+				echo "<td>$tax_select</td><td>$order_select</td><td>$sort_select</td>$priority_input</tr>";
+			endforeach;
 			echo '</tbody></table><i style="font-size:75%">If on, the value is the initial one; if off, value is fixed to restrict search</i></div></fieldset><hr>';
 		endif;
 		
