@@ -2,7 +2,7 @@
 
 //Version: 1.11.5
 
-$taxonomy_picker_prepacks = explode( "," , "collection,colour,gallery,images,licence,nature,number,product,sex,shape,size,style,what,where,when,who,writer"); // Our prepack taxonomies
+$taxonomy_picker_prepacks = explode( "," , "collection,colour,gallery,images,licence,nature,number,product,project,sex,shape,size,style,what,where,when,who,writer"); // Our prepack taxonomies
 
 add_action( 'init', 'taxonomy_picker_create_taxonomies', 0 );
 add_action( 'admin_init', 'taxonomy_picker_taxonomies_init', 20 ); 
