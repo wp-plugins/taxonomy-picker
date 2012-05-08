@@ -1,7 +1,7 @@
 <?php
 
 // Tidy up the POST output of the Taxonomy Widget form to pass to the blog homepage via URI to drive normal searching behaviour
-// Version: 1.12.2
+// Version: 1.12.3
 
 function taxonomy_picker_process() {  // Build a URI form the data POSTed by the widget form
 
@@ -56,7 +56,7 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 				
 			elseif( array_key_exists( 'miss-url', $tpicker_options ) ):
 			
-				$blog_url = $tpicker_poptions['miss-url']; // Default to the main blog
+				$blog_url = $tpicker_options['miss-url']; // Default to the main blog
 				
 			else:
 			
