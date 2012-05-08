@@ -9,7 +9,7 @@ Author: Kate Phizackerley
 Requires at least: 3.1
 Tested up to: 3.3.1
 Stable tag: trunk
-Version: 1.12.0
+Version: 1.12.1
 
 Add a widget to help your readers build custom queries using drop downs of your categories and custom taxonomies.  The latest version comes with a fully optional set of pre-packed custom taxonomies for anybody who wants additional "cartegories" or sets of "tags" without coding - the names are customisable.
 
@@ -38,10 +38,12 @@ Download the and activate the plugin the usual way.  The new widget will then be
 
 
 == Upgrade Notice ==
+
+= 1.12.1 =
+Bug fix - missing taxonomy names
+
 = 1.12.0 =
 Restructure Silverghll library code in preparation for release of Colophon plugin
-
-
 
 
 == Screenshots ==

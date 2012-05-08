@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.12.0
+// Version: 1.12.1
 // Builds the Standard Taxonomy Picker widget 
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -124,6 +124,7 @@ class FindHelperWidget extends WP_Widget {
 								
 					$tax_stem = 'taxonomy_'.$tax;
 					$tax_id = $this->get_field_id($tax_stem);
+					$taxonomy = get_taxonomy($tax);
 					$tax_name = $this->get_field_name($tax_stem);
 					$radio_checked = ($instance[$tax_stem]=='on') ? 'checked ' : '';
 					
