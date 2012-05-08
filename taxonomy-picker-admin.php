@@ -1,7 +1,7 @@
 <?php
 
 // PHP for the Taxonomy Picker Admin menu
-// Version: 1.11.5
+// Version: 1.12.0
 
 add_action( 'admin_menu', 'silverghyll_tpicker_menu_initialisation', 20); // silverghyll Menu added as 10
 add_action( 'admin_init', 'taxonomy_picker_admin_init', 20 ); 
@@ -29,7 +29,7 @@ function taxonomy_picker_plugin_action_links($links, $file) { // Add 'Settings" 
 // Adds the Taxonomy Picker admin menu in the silverghyll section
 function silverghyll_tpicker_menu_initialisation() {
 		$tpicker_admin_page = add_submenu_page( 'silverghyll-admin-menu.php', 'Taxonomy Picker', 'Taxonomy Picker', 'administrator', __FILE__, 'silverghyll_create_tpicker_menu'  );
-	add_action( 'admin_print_styles-' . $tpicker_admin_page, 'silverghyll_girls_admin_styles' ); // Add our admin style sheet
+	add_action( 'admin_print_styles-' . $tpicker_admin_page, 'silverghyll_admin_styles' ); // Add our admin style sheet
 }
 
 // Register and define settings
@@ -61,19 +61,12 @@ function taxonomy_picker_admin_init() {
 
 	add_settings_field('miss-url','Redirect to URL on null search', 'taxonomy_picker_tpfn', "tpicker-processing-sec","tpicker-processing");				
 
-	add_settings_field( "post_type", 'Enable post type?', 
-				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','post_type');"), "tpicker-processing-sec", "tpicker-processing");
-
-// Easy to add here, but coding a list of post formats needs different code
-/*	add_settings_field( "post_format", 'Enable post format (NB search results not guaranteed)?', 
-				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','post_format');"), "tpicker-processing-sec", "tpicker-processing"); */
-
 	/* Housekeeping options */
 	
-	add_settings_section( "tpicker-housekeeping", 'Housekeeping Options', 'tpicker_nothing', "tpicker-housekeeping-sec" );
-
 	add_settings_field( "labels_after", 'Labels after fields?', 
 				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','labels_after');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
+
+	add_settings_section( "tpicker-housekeeping", 'Housekeeping Options', 'tpicker_nothing', "tpicker-housekeeping-sec" );
 
 	add_settings_field( "taxonomies", 'Add pre-pack taxonomy support?', 
 				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','taxonomies');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
@@ -88,8 +81,22 @@ function taxonomy_picker_admin_init() {
 	add_settings_field( "beta-widget", "Use $widget_level widget (see notes)", 
 				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options',$widget_level . '-widget');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
 
+	add_settings_field( "colophon", 'Enable colophon shortcode?', 
+				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','colophon');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
+				
+/*	add_settings_field( "redirect", 'Enable redirect debug mode?', 
+				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','redirect');"), "tpicker-housekeeping-sec", "tpicker-housekeeping"); */
+
 	/* Results Options */
 	if( $tpicker_options['premium-widget'] ):
+
+
+		// Enable post formats and post types
+		add_settings_field( "post_format", 'Enable post format (NB search results not guaranteed)?', 
+						create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','post_format');"), "tpicker-processing-sec", "tpicker-processing"); 
+
+		add_settings_field( "post_type", 'Enable post type?', 
+					create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','post_type');"), "tpicker-processing-sec", "tpicker-processing");
 
 		add_settings_section( "tpicker-results", 'Results Handling', 'tpicker_nothing', "tpicker-results-sec" );
 
@@ -142,7 +149,11 @@ function silverghyll_create_tpicker_menu(){
 	?>
 	<div class="wrap">	
 		<div class="icon32" id="icon-options-general"><br></div>
+
 		<h2>Taxonomy Picker (v<?php echo $taxonomy_plugin['Version'] . ')' . ( ( $tpicker_options['premium-widget'] ) ? ' Premium Widget &beta;': ''); ?></h2>
+		
+		<?php silverghyll_check_foundation( true ); // Check silvergyll-foundation.php is up to date and display a warning if not ?>
+
 		<p><strong>For help and support please vist <a href="http://www.squidoo.com/taxonomy-picker-wordpress-plugin" target="_blank">http://www.squidoo.com/taxonomy-picker-wordpress-plugin</a></strong></p>
 		
 		<form action="options.php" method="post"><table><tbody><tr>

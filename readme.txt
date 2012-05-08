@@ -1,6 +1,6 @@
-=== Plugin Name ===
+=== Taxonomy Picker ===
 
-Contributors: Kate Phizackerley
+Contributors: Kate Phizackerley, katephiz
 Plugin Name: Taxonomy Picker
 Plugin URI: http://www.squidoo.com/taxonomy-picker-wordpress-plugin
 Tags: wp, query, taxonomy, category, categories, widget, plugin, sidebar, search
@@ -9,7 +9,7 @@ Author: Kate Phizackerley
 Requires at least: 3.1
 Tested up to: 3.3.1
 Stable tag: trunk
-Version: 1.11.6
+Version: 1.12.0
 
 Add a widget to help your readers build custom queries using drop downs of your categories and custom taxonomies.  The latest version comes with a fully optional set of pre-packed custom taxonomies for anybody who wants additional "cartegories" or sets of "tags" without coding - the names are customisable.
 
@@ -38,58 +38,11 @@ Download the and activate the plugin the usual way.  The new widget will then be
 
 
 == Upgrade Notice ==
-= 1.11.3 =
-Fix bug if category not first taxonomy.  Futher development of beta widget
+= 1.12.0 =
+Restructure Silverghll library code in preparation for release of Colophon plugin
 
 
-= 1.10.9 =
-Additional filter and an new option to display labels after fields
 
-= 1.10.9 =
-
-Fixes bug with tags; adds tpicker_query_string() function
-
-= 1.10 =
-
-Adds a beta version of an enhanced widget, which may be optionally enabled, to enable testing on a wider range of sites - see the plugin home for detils.  There is no reason to upgrade if you don't want to play with the new features; and no harm if you do as they are only enabled if you chose to.
-
-In a nutshell, it adds the first pass at drill down.  
-
-= 1.9x =
-
-Technical release.Recoding of widget display in preparation for further development.  Various patch releases.
-
-= 1.8 =
-
-Extend widget options.
-
-= 1.7.3=
-
-Add option to change text for "Search"
-
-= 1.7.2 =
-
-Minor bug fixes.
-
-= 1.7 = 
-
-Override on the ** all ** option for international users
-
-= 1.6 =
-
-Technical changes.  Not released.
-
-= 1.5 =
-
-The plugin now comes with an options screen in Admin which allows you to define:
-
-1) Whether the query is remembered - if you select this option then the combox boxes will populate with the query which has just been run (so long as the widget is displayed on the results page, e.g. is in a sidebar throughout your site).
-
-2) The text used for ** All **. This includes using the taxonomy names as an options so if your taxonomies are Size and Color then you could have All Sizes and All Colors instead of the ** All ** used by the first version.
-
-3) Whether to show the count alongside items. This isn't recommended (yet) for very large sites as I am not caching the query. That will come in v1.6 It works just fine and should be sufficient unless you have hundreds of posts and many entries in your taxonomies. So v1.5 good for hobby sites but if you are running an online shop you might prefer to wait for v1.6 for performance reasons - try it and see.
-
-4) There was a problem that when ** All ** was selected everywhere that it depended to display a 404 Not Found on some sites. You can now specify the URL to use "URL if no selection" to use when ** All ** is selected for all options. Pick whatever best suits your site.
 
 == Screenshots ==
 

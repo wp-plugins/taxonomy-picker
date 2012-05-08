@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.11.5
+// Version: 1.12.0
 // Builds the Standard Taxonomy Picker widget 
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -104,7 +104,6 @@ class FindHelperWidget extends WP_Widget {
 
 		// Build taxonomy selection boxes	 	
 		$taxes = get_taxonomies('','names');
-		if( isset($options['post_type'] ) ) $taxes[] = "post_type"; // Option to add post_type
 		if(count($taxes)>0): ?>
 			
 			<fieldset id="taxonomy-picker-taxonomoies"><h3>Taxonomies</h3><div>
@@ -116,9 +115,14 @@ class FindHelperWidget extends WP_Widget {
 			</tr></thead><tbody><?php
 			
 				foreach($taxes as $tax):
-					if( ($tax=='link_category') or ($tax=='nav_menu') or ( ($tax=='post_format') and !isset($options['post_format']) ) ) continue;
+				
+				if(	($tax=='link_category') or 
+						($tax=='nav_menu') or 
+						( $tax=='post_format') or
+						( $tax=='post_type' ) ) 
+						continue; // Disable types not handled by basic widget
+								
 					$tax_stem = 'taxonomy_'.$tax;
-					$taxonomy = get_taxonomy($tax);
 					$tax_id = $this->get_field_id($tax_stem);
 					$tax_name = $this->get_field_name($tax_stem);
 					$radio_checked = ($instance[$tax_stem]=='on') ? 'checked ' : '';

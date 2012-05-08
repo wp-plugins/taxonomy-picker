@@ -2,14 +2,35 @@
 
 // Standard module to initialise the Silverghyll Menu on the dashboard of nothing else has done it.  Copy to all plugins
 
-// Version: 3.0.1
+// Version: 3.4
+
+/*
+ * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ *
+ * Copyright Kate Phizackerley 2011,2012
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 
 add_action( 'admin_menu', 'silverghyll_girls_top_menu', 10);  // Add silverghyll admin menu support
 add_action( 'admin_init', 'silverghyll_girls_admin_menu_init' );  // Initialise silverghyll admin menu
 
 /* Add silverghyll Girls top menu */
 function silverghyll_girls_top_menu() {
-	$page = add_menu_page('Kandie Development', 'Kandie', 'administrator',  basename(__FILE__), 'silverghyll_create_admin_menu'  );
+	$page = add_menu_page('Silverghyll', 'Silverghyll', 'administrator',  basename(__FILE__), 'silverghyll_create_admin_menu'  );
 	add_action( 'admin_print_styles-' . $page, 'silverghyll_admin_styles' );
 }
 
@@ -27,7 +48,7 @@ function silverghyll_girls_admin_menu_init() {
 	wp_register_style( 'silverghyll_admin_stylesheet', $silverghyll_admin_stylesheet_url, false, $last_modified);
 }
 /* Enque stylesheet */
-function silverghyll_girls_admin_styles() { // It will be called only on your plugin admin page, enqueue our stylesheet here
+function silverghyll_admin_styles() { // It will be called only on your plugin admin page, enqueue our stylesheet here
 	wp_enqueue_style( 'silverghyll_admin_stylesheet');
 }
 
@@ -40,13 +61,15 @@ function silverghyll_create_admin_menu(){
 	$plugin_name = $plugin_data['Name'];
 	if(!$plugin_name) $plugin_name =  'Kandie Girls'; // If not a plugin, then it is the Kandie Girls theme!
 	
+	silverghyll_check_foundation( true ); // Check silvergyll-foundation.php is up to date and display a warning if not
+	
 	?>
 	<h3>Silverghyll Packages</h3>
-	<p>This sub-menu is used for packages (plugins and themes) from Silverghyll Development.</p>
+	<p>This sub-menu is used for packages (plugins and themes) from <a href="http://www.silverghyll.com" target="_blank">Silverghyll</a></p>
 	<table id="silverghyll-inventory" class="widefat">
 	<thead>
 		<tr>
-			<td>Name</td>
+			<td>Package</td>
 			<td>Type</td>
 			<td>Installed?</td>
 			<td>Description</td>
@@ -64,7 +87,7 @@ function silverghyll_create_admin_menu(){
 			<td>Plugin</td>
 			<td>
 				<?php 
-				$item_installed = ($kp['PluginURI'])  ? 'Yes' : 'No';
+				$item_installed = ($kp['Installed'] === true )  ? 'Yes' : 'No';
 				_e($item_installed); 
 				if($item_installed == 'Yes') echo ' (v' . $kp['Version'] . ')';
 				?>
@@ -74,18 +97,19 @@ function silverghyll_create_admin_menu(){
 	<?php endforeach; ?> 
 
 	<?php
-		if( defined('silverghyll_THEME_DIR') ):
+		if( defined('KANDIE_THEME_DIR') ):
 			echo "<tr><td>Kandie Girls</td><td>Theme</td><td>Yes (v". silverghyll_versioneer( trailingslashit( silverghyll_THEME_DIR) . 'style.css' ); 
 			echo ")</td><td>Kandie Girls theme developed for Egyptological</td></tr>";
 		endif; 
 		?>
 	</tbody>
 	</table><br style="clear:both;">
-	Packages &copy;Kate Phizackerley 2009-2012.  Please refer to each package for licence details. <br/>
+	
+	Packages &copy; Kate Phizackerley and/or Silverghyll 2009-2012.  Please refer to each package for copyright and licence details. <br/>
 	
 	<?php 
 	silverghyll_debug_status('echo-trace');
-	echo "<br/><h3>Kandie Library Versions and Paths</h3><style type='text/css'>.widefat thead td {font-weight:bold;font-size;120%;}</style>";
+	echo "<br/><h3>Silverghyll Library Versions and Paths</h3><style type='text/css'>.widefat thead td {font-weight:bold;font-size;120%;}</style>";
 	echo "<table class='widefat'><thead><b><tr><td>Library Item</td><td>Path</td><td>Version</td><td>Date</td></tr></b></thead><tbody>";
 	$lib_contents = silverghyll_admin_library_versions();
 	foreach($lib_contents as $item => $path):
@@ -94,7 +118,9 @@ function silverghyll_create_admin_menu(){
 	endforeach;
 	$gd_inf = gd_info();
 	$gd_ver = " &amp; GD {$gd_inf['GD Version']}" . ( ($gd_inf['Freetype Support']) ? " with Freetype support" : "" );
-	echo "</tbody></table><br/><p>Printed by $plugin_name using PHP v" . phpversion() ."{$gd_ver}</p>";
+	echo "</tbody></table><br/><p>Printed by $plugin_name using PHP v" . phpversion() .
+			"{$gd_ver} with Silverghyll Foundation Library from " . SILVERGHYLL_READY ."</p>";
+		
 }
 
 /**

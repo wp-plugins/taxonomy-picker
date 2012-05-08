@@ -1,8 +1,10 @@
-/*	This cascading style sheet was developed by is copyright Kate Phizackerley 2011,2012 */
+/*	This cascading style sheet was developed by, and is copyright Kate Phizackerley 2011,2012 */
+/* 	Version: 1.12.0 */
 
+.tpicker-title label {text-align:right;mergin:0 0.6em 0 2em;}
 
 .taxonomy-picker select {clear:left; width: 100%;}
-.tpicker_search_text {width:90%;}
+.tpicker-search-text {width:90%;}
 
 .taxonomy-picker .tree .level2 {padding-left:8%;}
 .taxonomy-picker .tree .level3 {padding-left:16%;}

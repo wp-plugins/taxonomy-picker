@@ -2,15 +2,14 @@
 
 /**** 
  * 
- * ?????????
- *
+ * Silvergyll library functions used by plugins rather than themes
  * Version: 1.0
  *
  ************************************************************
  *
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
- * Copyright Kate Phizackerley 2012
+ * Copyright Kate Phizackerley 2011,2012
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.11.5
+// Version: 1.12.0
 // Builds the Premium TPicker widget
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -69,6 +69,7 @@ class FindHelperWidget extends WP_Widget {
 		$instance['category_title'] = strip_tags( $new_instance['category_title'] );
 		$instance['set_categories'] = str_replace(' ','', strip_tags( $new_instance['set_categories'] ) );
 		$instance['set_pages'] = strip_tags( $new_instance['set_pages'] );
+		$instance['id'] = preg_replace( '~\W+~', '', $instance['id'] );
 
 		return taxonomy_picker_taxonomies_array( $instance ); // Pre-process the instance for efficiency
 		
@@ -81,24 +82,29 @@ class FindHelperWidget extends WP_Widget {
 		$instance = wp_parse_args( (array) $instance, $defaults ); 
 		$options = get_option('taxonomy-picker-options');
 
+		// ID
+		$instanceid = $this->get_field_id( 'id' );
+		$instance_name = $this->get_field_name( 'id' );
+		if( empty( $instance['id'] ) ) $instance['id'] = substr(md5(uniqid(rand(), true)),0,6);
+
 		// Widget title
-	   $title_id = $this->get_field_id( 'title' );
+	   $titleid = $this->get_field_id( 'title' );
 	   $title_name = $this->get_field_name( 'title' );
-		$title_value = $instance['title'];
-		
+		$title_value = $instance['title'] . '&ensp;<span class="instance-ID">(ID = ' .  $instance['id'] . ')</span>';
+
 		//Show search?
-	 	$search_id = $this->get_field_id( 'hidesearch' );
+	 	$searchid = $this->get_field_id( 'hidesearch' );
 	   $search_name = $this->get_field_name( 'hidesearch' );
 		$radio_checked = ($instance['hidesearch']=='on') ? 'checked ' : '';
 	    
-	    ?><p><fieldset id="taxonomy-picker-title">
-	    	<table><tbody><tr><td><label for='<?php echo $title_id;  ?>' style="float:left;">Title:&nbsp;</label>
-	    	<input id='<?php echo $title_id;  ?>' name='<?php echo $title_name;  ?>' value='<?php echo $title_value;  ?>' style='width:60%;' /></td> 
-
-
-	   <?php
-		echo "<td><input id='$search_id' class='checkbox' type='checkbox' name='$search_name' $radio_checked />";
-		echo "&nbsp;<label for='$search_id' title='showsearch'><span  style='font-size:85%;'>Hide text search?</span></label></td></tr></tbody></table></fieldset></p><hr>";
+	   echo '<p class="tpicker-title"><fieldset id="taxonomy-picker-title">';
+			echo "<td><label for='$titleid' title='title'>Title:</label>
+							<input id='$titleid' class='textbox' type='textbox' name='$title_name' value='" . $instance['title'] . "' /></td>";
+			echo "<td><label for='$instanceid' title='id'>Unique ID:</label>
+							<input id='$instanceid' class='textbox' type='textbox' name='$instance_name' value = '" . $instance['id'] . "' /></td>";
+			echo "<td><label for='$searchid' title='showsearch'>Hide text search?</label>
+							<input id='$searchid' class='checkbox' type='checkbox' name='$search_name' $radio_checked /></td>";
+		echo "</tr></tbody></table></fieldset></p><hr>";
 
 
 		/*********** Premium options *********/
@@ -106,6 +112,7 @@ class FindHelperWidget extends WP_Widget {
 		// Radio buttons alternative
 		?><p><fieldset id="tpicker_premium"><h3>Premium Options</h3><table><tbody><tr><td><?php
 
+/* *** Front side code needed ***
 		// Date Match option
 		echo "Match date:</td><td><select name='" . $this->get_field_name('date_match') . "'>";
 		foreach( array('N/A','Y','YM','YMD','M','D') as $item ):
@@ -113,7 +120,7 @@ class FindHelperWidget extends WP_Widget {
 			echo "<option value='$item' $selected>{$item}</option>";
 		endforeach;
 		?></select></td><?php
-
+*/
 		
 		// Code for sort results options
 		$selected = ( $instance['results_orderby'] == '_default' ) ? 'selected=selected' : '' ;
@@ -146,13 +153,15 @@ class FindHelperWidget extends WP_Widget {
 		
 		?></tr></tbody></table></fieldset></p><hr><?php
 
-	 	unset($title_id, $title_name, $title_value,$search_id,$search_value,$combo, $selected,$item,$item_text,$combo,$user_choice);
+	 	unset($titleid, $title_name, $title_value,$searchid,$search_value,$combo, $selected,$item,$item_text,$combo,$user_choice);
 	 	
 	 	/************ Taxonomies Section ************/
 
 		// Build taxonomy selection boxes	 	
 		$taxes = get_taxonomies('','names');
-		if( isset($options['post_type'] ) ) $taxes[] = "post_type"; // Option to add post_type
+
+		if( isset($options['post_type'] ) ) $taxes['post_type'] = "post_type"; // Option to add post_type
+
 		if(count($taxes)>0): 
 			
 			$priority_name = ( isset($options['sort-priority'] ) ) ? '<td><strong>Priority</strong></td>' : '';
@@ -168,34 +177,60 @@ class FindHelperWidget extends WP_Widget {
 			</tr></thead><tbody><?php
 			
 			foreach($taxes as $tax):
-				if( ($tax=='link_category') or ($tax=='nav_menu') or ( ($tax=='post_format') and !isset($options['post_format']) ) ) continue;
-				$tax_stem = 'taxonomy_'.$tax;
-				$taxonomy = get_taxonomy($tax);
-				$tax_id = $this->get_field_id($tax_stem);
+			
+				if(	($tax=='link_category') or 
+						($tax=='nav_menu') or 
+						( ($tax=='post_format') and !isset($options['post_format']) ) or
+						( ($tax=='post_type') and !isset($options['post_type']) ) ) 
+						continue;  // Skip any un-supported or de-selected taxonomy
+						
+				$tax_stem = 'taxonomy_'.$tax;		
+				if( $tax == 'post_type'):
+					$tax_label = 'Post Type';				
+				else:
+					$taxonomy = get_taxonomy($tax);
+					$tax_label = $taxonomy->label;
+				endif;
+					
+				$taxid = $this->get_field_id($tax_stem);
 				$tax_name = $this->get_field_name($tax_stem);
 				$radio_checked = ($instance[$tax_stem]=='on') ? 'checked ' : '';
 				
-				if($tax <> 'category'): // Custom taxonomy - build fix/initial value combobox
-					$terms = get_terms($taxonomy->name, array('orderby'=>'name'));
+				if($tax <> 'category'): // Custom taxonomy or post_type or post_format - build fix/initial value combobox
+				
+					if( $tax == 'post_type' ):
+						$taxonomy_name = 'post_type';
+						$args = array( '_builtin' => true );
+						$terms = get_post_types( $args, 'names' );
+					else:
+						$taxonomy_name = $taxonomy->name;
+						$terms = get_terms($taxonomy->name, array('orderby'=>'name'));
+					endif;
 
-					$select_name = $this->get_field_name("fix_".$tax);
-					$tax_select  = "<select name='$select_name' style='width:90%;font-size:85%;'>";
-					$tax_select .= "<option value='$taxonomy->name=tp-all'>".taxonomy_picker_all_text($tax_label)."</option>";
-					foreach($terms as $term): // Loop through the terms to build the options
-						$option_name = $taxonomy->name.'='.$term->slug;
-						$selected = ($instance['fix_'.$tax] == $option_name) ? 'selected="selected"' : '';
-						$tax_select .= "<option value='$option_name' $selected>$term->name</option>";
-					endforeach;
-					$tax_select .= "</select>";
+					if( !empty( $terms ) ):  // Check we have some terms to process ...
+					
+						$select_name = $this->get_field_name( "fix_{$tax}" ); // The name of the Fix field
+
+						
+						$tax_select  = "<select name='$select_name' style='width:90%;font-size:85%;'>";
+						$tax_select .= "<option value='{$taxonomy_name}=tp-all'>".taxonomy_picker_all_text($tax_label)."</option>";
+						foreach( (array) $terms as $term ): // Loop through the terms to build the options
+							$option_name = $taxonomy_name . '=' . ( (is_string( $term ) ? $term : $term->slug ) );
+							$selected = ($instance['fix_'.$tax] == $option_name) ? 'selected="selected"' : '';
+							$tax_select .= "<option value='$option_name' $selected>" . ( (is_string( $term ) ? $term : $term->name ) ) . '</option>';
+						endforeach;
+						$tax_select .= "</select>";
+					endif; // !empty()
 					
 					// Orderby comboboxes
 					$select_name = $this->get_field_name("orderby_".$tax);
 					$order_select  = "<select name='$select_name' style='width:90%;font-size:90%;'>";
 										
-					$orders =array('name','slug','id','count','tree');  
+					if( $tax==post_type or $tax=='post_format' ) $orders = 'name'; else $orders =array('name','slug','id','count','tree');  
 					if( $options['beta-widget'] ) $orders[]='pruned_tree';
-					foreach( $orders as $order):
-						$selected = ($instance['orderby_'.$tax] == $order) ? 'selected="selected"' : '';
+					
+					foreach( (array) $orders as $order):
+						$selected = ($instance["orderby_{$tax}"] == $order) ? 'selected="selected"' : '';
 						$select_label = ($order=='name') ? 'Label' : ucwords( str_replace('_',' ',$order) );
 						$order_select .= "<option value='$order' $selected>$select_label</option>";
 					endforeach;
@@ -218,27 +253,27 @@ class FindHelperWidget extends WP_Widget {
 					endif;						
 				endif;
 				
-				echo "<tr><td><input id='$tax_id' class='checkbox' type='checkbox' name='$tax_name' $radio_checked />";
-				echo "&nbsp;<label for='$tax_id' title='$tax_stem'><span  style='font-size:85%;'>$taxonomy->label</span></label></td>";
+				echo "<tr><td><input id='$taxid' class='checkbox' type='checkbox' name='$tax_name' $radio_checked />";
+				echo "&nbsp;<label for='$taxid' title='$tax_stem'>$tax_label</span></label></td>";
 				echo "<td>$tax_select</td><td>$order_select</td><td>$sort_select</td>$priority_input</tr>";
 			endforeach;
 			echo '</tbody></table><i style="font-size:75%">If on, the value is the initial one; if off, value is fixed to restrict search</i></div></fieldset><hr>';
 		endif;
 		
 		// Select Categories		
-		$title_id = $this->get_field_id( 'category_title' );
+		$titleid = $this->get_field_id( 'category_title' );
 	   $title_name = $this->get_field_name('category_title');
 	   $title_value = $instance['category_title'];
 
 		echo '<fieldset id="taxonomy-picker-categories"<p><h3>Categories</h3></p>';
-		echo '<p style="float:left;"><label for="$cat_title_id"><b>Title:</b></label></p>';
+		echo '<p style="float:left;"><label for="$cat_titleid"><b>Title:</b></label></p>';
 		echo '<p style="float:right;width:75%;">';
-			echo "<input id='$title_id' name='$title_name' value='$title_value' style='width:90%;' />";
+			echo "<input id='$titleid' name='$title_name' value='$title_value' style='width:90%;' />";
 		echo '</p>';
 		echo '<br style="clear:both;"/><label><b>Select:&nbsp;&nbsp;</b></label>';
 
 		// Build radio buttons for All, Incl , Excl for categories	
-		$radio_id = $this->get_field_id('choose_categories');
+		$radioid = $this->get_field_id('choose_categories');
 		$radio_name = $this->get_field_name('choose_categories');
 		$radio_value = $instance['choose_categories'];
 		$radio_checked = ($instance['choose_categories']=='A')?'checked':'';
@@ -247,16 +282,16 @@ class FindHelperWidget extends WP_Widget {
 		echo "Incl:&nbsp;<input type='radio' name='$radio_name' value='I' $radio_checked />&nbsp;|&nbsp;"; 
 		$radio_checked = ($instance['choose_categories']=='E')?'checked':'';
 		echo "Excl:&nbsp;<input type='radio' name='$radio_name' value='E' $radio_checked /><br/>"; 
-		$input_id = $this->get_field_id('set_categories');
+		$inputid = $this->get_field_id('set_categories');
 		$input_name = $this->get_field_name('set_categories');
 		$input_value = $instance['set_categories'];
-		echo "<input id='$input_id' name='$input_name'  value='$input_value' style='width:100%;margin-top:2px;'/>";
+		echo "<input id='$inputid' name='$input_name'  value='$input_value' style='width:100%;margin-top:2px;'/>";
 		echo '<i style="font-size:75%">Enter category IDs separated by commas</i>';
 		echo '</fieldset><hr>';
 
 		echo '<fieldset id="taxonomy-picker-pages">';
 		echo '<p><h3>Pages</h3></p><label><b>Select:&nbsp;&nbsp;</b></label>';
-		$radio_id = $this->get_field_id('choose_pages');
+		$radioid = $this->get_field_id('choose_pages');
 		$radio_name = $this->get_field_name('choose_pages');
 		$radio_value = $instance['choose_pages'];
 		$radio_checked = ($instance['choose_pages']=='A')?'checked':'';
@@ -266,10 +301,10 @@ class FindHelperWidget extends WP_Widget {
 		$radio_checked = ($instance['choose_pages']=='E')?'checked':'';
 		echo "Excl:&nbsp;<input type='radio' name='$radio_name' value='E' $radio_checked /><br/>"; 
 
-		$input_id = $this->get_field_id('set_pages');
+		$inputid = $this->get_field_id('set_pages');
 		$input_name = $this->get_field_name('set_pages');
 		$input_value = $instance['set_pages'];
-		echo "<input id='$input_id' name='$input_name' value='$input_value' style='width:100%;margin-top:2px;'/>";
+		echo "<input id='$inputid' name='$input_name' value='$input_value' style='width:100%;margin-top:2px;'/>";
 		echo '<i style="font-size:75%">Enter page IDs separated by commas</i>';
 	echo '</fieldset>';
 		
