@@ -1,7 +1,7 @@
 <?php
 
 // PHP for the Taxonomy Picker Admin menu
-// Version: 1.12.0
+// Version: 1.13.1
 
 add_action( 'admin_menu', 'silverghyll_tpicker_menu_initialisation', 20); // silverghyll Menu added as 10
 add_action( 'admin_init', 'taxonomy_picker_admin_init', 20 ); 
@@ -42,7 +42,8 @@ function taxonomy_picker_admin_init() {
 	add_settings_section( "tpicker-processing", 'Query Processing', 'tpicker_nothing', "tpicker-processing-sec");
 				
 	$fn_txt = "silverghyll_admin_combobox('taxonomy-picker-options','all-format',array('** All **','All Items','Everything','Every {name}','All {name}', 'All {name}s', 'N/A'));";
-	str_replace( (string)$fn_txt, array('All','Items','Every','Everything'), array(__('All'),__('Items'),__('Every'),__('Everything')) );			
+	str_replace( (string)$fn_txt, array('All','Items','Every','Everything'), array(__('All','tpicker'),__('Items','tpicker'),__('Every','tpicker'),__('Everything','tpicker')) );			
+	
 	add_settings_field( "all-format", 'Text for \'all\' option', create_function('',$fn_txt),	"tpicker-processing-sec","tpicker-processing");
 
 	add_settings_field('all-override','Override text for ** all ** (optional)', 'taxonomy_picker_tpfn2', "tpicker-processing-sec","tpicker-processing");				
@@ -172,7 +173,7 @@ function silverghyll_create_tpicker_menu(){
  		</tr></tbody></table><p>&nbsp;</p>
 		<input name="Submit" type="submit" value="Save Changes" />
 		</form>
-		<p><strong>NB</strong> The beta widget has additional options but is still undergoing final testing. The additional options include radio buttons as an alternative to combo boxes and the ability to control the order of results. When this is complete it may become a paid-for, premium widget.  The basic, legacy widget will always remain free and it is suggested that you use that unless you need any of the advanaced features.</p>
+		<p><strong>NB</strong> The beta widget has additional options but is still undergoing final testing. The additional options include radio buttons as an alternative to combo boxes and the ability to control the order of results. When this is complete (forthcoming release 2.0.0 of the plugin) it may become a paid-for, premium widget.  The basic, legacy widget will always remain free and it is suggested that you use that unless you need any of the advanaced features.</p>
 		<p><strong>&copy; <a href="http://www.egyptological.com/about/founders" target="_blank">Kate Phizackerley</a>, 2011-2012</strong></p>
 	</div> <!-- Wrap -->
 	<?php

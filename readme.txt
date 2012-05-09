@@ -38,6 +38,8 @@ Download the and activate the plugin the usual way.  The new widget will then be
 
 
 == Upgrade Notice ==
+= 1.13.1 =
+Extends multi select option to basic, legacy widget
 = 1.13.0 =
 Adds experimental multi select option to beta widget (and to basic widget via filters).  Fixes notice warning.
 = 1.12.0 =

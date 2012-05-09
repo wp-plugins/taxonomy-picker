@@ -2,7 +2,7 @@
 
 /* Class-based library
  * Functons shared by the shortcode and widget
- * Version: 1.12.3
+ * Version: 1.13.0
  */
 
 
@@ -22,6 +22,9 @@ function taxonomy_picker_option_set($get_var) {
  */
 
 function taxonomy_picker_tpicker_array() {
+
+	if( !array_key_exists( 'silverghyll_tpicker', $_GET ) ) return null;
+
    $tpicker_get = taxonomy_picker_dencode( $_GET['silverghyll_tpicker'], 'decode' );
    if( $tpicker_get ):
       $input = explode( '&', $tpicker_get );
@@ -49,10 +52,12 @@ function taxonomy_picker_encode($input) {
 
 /* Decode string encoded by taxonomy_picker_encode()
  *
- *    @param   input string  or array string to decode
- *
- * @return string    t-picker decoded version of input
+ *		@param   input mixed (string, or array or string)
+ *									String - a single string in form foo=bar to de-santise and return as foo=bar
+ *									Array	- an array of strings to return in form foo=bar1,bar2
+ * 	@return	string    t-picker decoded version of input
  */
+ 
 function taxonomy_picker_decode($input) {
 	if( is_array( $input ) ):
 		$result = '';
@@ -302,7 +307,9 @@ class taxonomy_picker_widget {
       
       $this->title = apply_filters('widget_title', $instance['title'] );      
       if($this->title) $this->title = $this->before_title . $this->title . $this->after_title;  // Wrap it
-      $this->id = $instance['id'];
+      
+
+      $this->id = ( array_key_exists( 'id', $instance ) ) ? $instance['id'] : 'unset';     	
       
       $this->before_widget = apply_filters('tpicker_before' , ( ($before_widget) ? $before_widget : $this->before_widget ) );
       $this->after_widget = apply_filters('tpicker_after' , ( ($after_widget) ? $after_widget : $this->after_widget ) );
@@ -531,7 +538,7 @@ class taxonomy_picker_widget {
       case 'flat':
       case 'multi': // Normal combo box
 
-         if( $this->combo == 'multi' ):
+         if( apply_filters( 'tpicker_multi_select', $this->combo, $tax_label ) == 'multi' ): // Filter allows one to be turned on or off
          	$result .= "<select name='{$taxonomy_name}[]' multiple>";
          else:
          	$result .= "<select name='{$taxonomy_name}'>";

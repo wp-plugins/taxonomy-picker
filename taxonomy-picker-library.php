@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget - Deprecated version
- * Version: 1.13.0
+ * Version: 1.13.1
  */
 
 /* Standardise function for accessing $_GET variables
@@ -211,7 +211,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 	$result .= '<form method="post" action="'.$_SERVER['REQUEST_URI'].'" class="taxonomy-picker" id="taxonomy-picker"><ul class="taxonomy-list">';
 	
 	$search_text = ($tpicker_options['search-text']) ? $tpicker_options['search-text'] : __('Search');
-	if( !$instance['hidesearch'] ):
+	if( !array_key_exists( 'hidesearch', $instance ) ): // Option suppresses
 		$result .= "<li class='home search first'>";
 		if( $labels_after ):
 			$result .= "<input name='s' value='' type='text' style='width:90%;'></li>";  // Search text box
@@ -273,14 +273,14 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 			
 			if( !$labels_after ) $result .= "<label style='float:left;'>$tax_label</label>"; 
 			
-			// Multi select can be enabled using a filter
-         if( apply_filters( 'tpicker_multi_select', 'flat', $tax_label ) == 'multi' ): // Filter allows one to be turned on or off
+         // Multi-select combo boxes?
+         $multi = ( array_key_exists( 'combo', $instance ) ) ? $instance['combo'] : 'flat';  // Transitional code as combo may not exist if widget has not been saved since 1.13.0
+         if( apply_filters( 'tpicker_multi_select', $multi, $tax_label ) == 'multi' ): // Filter allows one to be turned on or off
          	$result .= "<select name='{$taxonomy_name}[]' multiple>";
          else:
          	$result .= "<select name='{$taxonomy_name}'>";
          endif;
          
-			
 			
 			$result .= "<option value='$taxonomy_name=tp-all'>". taxonomy_picker_all_text($tax_label) ."</option>";
 			
@@ -334,7 +334,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 				endif;
 				
 				
-				if($tpicker_options['show-count'] and $allowed ): 
+				if( array_key_exists( 'show_count' , $tpicker_options ) and $allowed ): 
 					$result .= taxonomy_picker_widget_select_option( $option_name, "$t_name ({$term->count})", $selected, $term->parent );
 				elseif($allowed):
 					$result .= taxonomy_picker_widget_select_option( $option_name, $t_name, $selected, $term->parent  );
@@ -353,7 +353,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 	
 	$result .= apply_filters( 'tpicker_form_after_fields', ""); // Filter taxonomy order
 	
-	$result .= "<input type='hidden' name='set_categories' value='$set_categories' />";
+	$result .= "<input type='hidden' name='set_categories' value='" . $instance['set_categories'] . "' />";
 	$result .= "<input type='hidden' name='kate-phizackerley' value='taxonomy-picker' />";
 	$result .= '<li style="height:8px;" class="last"></li></ul><p style="text-align:center;margin:0 auto;">';
 	

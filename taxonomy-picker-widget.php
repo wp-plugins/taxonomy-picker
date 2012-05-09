@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.12.1
+// Version: 1.13.1
 // Builds the Standard Taxonomy Picker widget 
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -96,6 +96,13 @@ class FindHelperWidget extends WP_Widget {
 
 		echo "<table><tbody><tr><td><input id='$search_id' class='checkbox' type='checkbox' name='$search_name' $radio_checked />";
 		echo "&nbsp;<label for='$search_id' title='showsearch'><span  style='font-size:85%;'>Hide text search?</span></label></td></tr>";
+
+		echo "<tr><td>Combobox type:</td><td><select name='" . $this->get_field_name('combo') . "'>";
+		foreach( array('flat','multi') as $combo ):
+			$selected = ( $instance['combo'] == $combo ) ? 'selected=selected' : '' ;
+			echo "<option value='$combo' $selected>" .  ucwords($combo) . "</option>";
+		endforeach;
+		echo '</select></td><td>(Multi-select may not work with all themes)</td></tr>';
 
 		echo "</tbody></table></fieldset></p><hr>";
 
