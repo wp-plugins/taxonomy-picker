@@ -2,7 +2,7 @@
 
 /* Class-based library
  * Functons shared by the shortcode and widget
- * Version: 1.12.0
+ * Version: 1.12.3
  */
 
 
@@ -49,12 +49,31 @@ function taxonomy_picker_encode($input) {
 
 /* Decode string encoded by taxonomy_picker_encode()
  *
- *    @param   input string   string to decode
+ *    @param   input string  or array string to decode
  *
  * @return string    t-picker decoded version of input
  */
 function taxonomy_picker_decode($input) {
-   return taxonomy_picker_dencode( $input, 'decode' );
+	if( is_array( $input ) ):
+		$result = '';
+		foreach( $input as $in ): // Build up a CSV
+		
+			$item = taxonomy_picker_dencode( $in, 'decode' );
+			
+			if( empty( $result) ):
+				$result = $item;
+				$var = strtok( $item, '=' ) . '=';
+			else:
+				$result .= ',' . substr( $item, strlen( $var ) );
+			endif;
+			
+		endforeach;
+
+	else:
+   	$result = taxonomy_picker_dencode( $input, 'decode' );
+   endif;
+   
+   return $result;
 }
 
 /* Encode or decode string for taxonomy_pciker
@@ -509,9 +528,15 @@ class taxonomy_picker_widget {
 
          
       case '':
-      case 'flat': // Normal combo box
+      case 'flat':
+      case 'multi': // Normal combo box
 
-         $result .= "<select name='$taxonomy_name'>"; 
+         if( $this->combo == 'multi' ):
+         	$result .= "<select name='{$taxonomy_name}[]' multiple>";
+         else:
+         	$result .= "<select name='{$taxonomy_name}'>";
+         endif;
+         
          if( taxonomy_picker_all_text($tax_label) <> 'N/A' ):  
             $result .= "<option value='$taxonomy_name=tp-all'>". taxonomy_picker_all_text($tax_label) ."</option>";// ** ALL **
          endif;

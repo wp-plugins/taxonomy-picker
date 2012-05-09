@@ -145,7 +145,7 @@ class FindHelperWidget extends WP_Widget {
 						<option value='ASC'>Ascending</option><option value='DSC'>Descending</option></select></td></tr>";
 
 		echo "<tr><td>Combobox type:</td><td><select name='" . $this->get_field_name('combo') . "'>";
-		foreach( array('flat','radio') as $combo ):
+		foreach( array('flat','multi', 'radio') as $combo ):
 			$selected = ( $instance['combo'] == $combo ) ? 'selected=selected' : '' ;
 			echo "<option value='$combo' $selected>" .  ucwords($combo) . "</option>";
 		endforeach;

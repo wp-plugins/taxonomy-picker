@@ -1,13 +1,13 @@
 <?php
 /* Plugin Name: Taxonomy Picker
  * Plugin URI: http://www.squidoo.com/taxonomy-picker-wordpress-plugin
- * Description: Help visitors build complex queries using categories and your custom taxonomies by chosing terms from drop down boxes.  The widget also includes a text search making it easy to search for text only within certain categories or taxonomies. Results will be displayed using your theme's standard search form so the results need no additonal styling - but your permalinks must handle standard WordPress queries in the URL and some prettylink settings may be incompatible.
+ * Description: Help visitors build complex queries using categories and custom taxonomies by chosing terms from drop down boxes.  The widget also includes a text search making it easy to search for text only within certain categories or taxonomies. Results will be displayed using your theme's standard search form so the results need no additonal styling - but your permalinks must handle standard WordPress queries in the URL and some prettylink settings may be incompatible.
  *
  *******************************************************************
  *
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.12.3
+ * Version: 1.13.0
  *
  *******************************************************************
  *
@@ -17,7 +17,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * Copyright Kae Phizackerley 2011,2012
+ * Copyright Kate Phizackerley 2011,2012
  *
  */
 

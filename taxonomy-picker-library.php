@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget - Deprecated version
- * Version: 1.11.5
+ * Version: 1.13.0
  */
 
 /* Standardise function for accessing $_GET variables
@@ -45,15 +45,37 @@ function taxonomy_picker_encode($input) {
 	return taxonomy_picker_dencode( $input, 'encode' );
 }
 
-/*	Decode string encoded by taxonomy_picker_encode()
+/* Decode string encoded by taxonomy_picker_encode()
  *
- * 	@param	input string	string to decode
- *
- *	@return string 	t-picker decoded version of input
+ *		@param   input mixed (string, or array or string)
+ *									String - a single string in form foo=bar to de-santise and return as foo=bar
+ *									Array	- an array of strings to return in form foo=bar1,bar2
+ * 	@return	string    t-picker decoded version of input
  */
+ 
 function taxonomy_picker_decode($input) {
-	return taxonomy_picker_dencode( $input, 'decode' );
+	if( is_array( $input ) ):
+		$result = '';
+		foreach( $input as $in ): // Build up a CSV
+		
+			$item = taxonomy_picker_dencode( $in, 'decode' );
+			
+			if( empty( $result) ):
+				$result = $item;
+				$var = strtok( $item, '=' ) . '=';
+			else:
+				$result .= ',' . substr( $item, strlen( $var ) );
+			endif;
+			
+		endforeach;
+
+	else:
+   	$result = taxonomy_picker_dencode( $input, 'decode' );
+   endif;
+   
+   return $result;
 }
+
 
 /*	Encode or decode string for taxonomy_pciker
  *
@@ -250,7 +272,17 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 			$result .= "<li class='$css_class'>";
 			
 			if( !$labels_after ) $result .= "<label style='float:left;'>$tax_label</label>"; 
-			$result .= "<select name='$taxonomy_name'><option value='$taxonomy_name=tp-all'>". taxonomy_picker_all_text($tax_label) ."</option>";
+			
+			// Multi select can be enabled using a filter
+         if( apply_filters( 'tpicker_multi_select', 'flat', $tax_label ) == 'multi' ): // Filter allows one to be turned on or off
+         	$result .= "<select name='{$taxonomy_name}[]' multiple>";
+         else:
+         	$result .= "<select name='{$taxonomy_name}'>";
+         endif;
+         
+			
+			
+			$result .= "<option value='$taxonomy_name=tp-all'>". taxonomy_picker_all_text($tax_label) ."</option>";
 			
 			$css_class=''; // After home reset to ''
 
@@ -297,7 +329,8 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 				if( empty($tpicker_inputs) ): 
 					$selected = ($data_item['value'] == ($taxonomy_name . '=' . $term->slug) ) ? 'on' : '';
 				else:
-					$selected = ($tpicker_inputs[$taxonomy_name] == $term->slug) ? 'on' : '';
+					$input_value = $tpicker_inputs[$taxonomy_name];
+					$selected = ( $input_value == $term->slug) ? 'on' : '';
 				endif;
 				
 				

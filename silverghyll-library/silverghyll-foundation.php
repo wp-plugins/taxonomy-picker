@@ -329,7 +329,7 @@ function silverghyll_include_best_library( $filename = 'silverghyll-admin-menu.p
 	endforeach;
 
 	// Store in a transient to avoid iterating when not needed but only once all plugins have loaded
-	if( defined( SILVERGHYLL_READY ) ) $silverghyll_transients->set( $transient_name, $best_path );
+	if( defined( 'SILVERGHYLL_READY' ) ) $silverghyll_transients->set( $transient_name, $best_path );
 	
 	return $best_path;
 }

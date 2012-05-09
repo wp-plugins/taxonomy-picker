@@ -1,7 +1,7 @@
 <?php
 
 // Tidy up the POST output of the Taxonomy Widget form to pass to the blog homepage via URI to drive normal searching behaviour
-// Version: 1.12.3
+// Version: 1.12.4
 
 function taxonomy_picker_process() {  // Build a URI form the data POSTed by the widget form
 
@@ -29,7 +29,14 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 			if($clean_item <> 'set_categories' and $clean_item <> 's' and $clean_item <> 'kate-phizackerley'): // We have a result from a combo box						
 				if(strpos($data,'=tp-all') === false):  // Specific taxonomy picked
 
-					$custom_query .= ( ($custom_query) ? '&' : '' ) . strtok( $clean_data, '=' ) . '=' . sanitize_title(strtok("=")); // eg add &writer=Kate-Phizackerley
+					$custom_query .= ( ($custom_query) ? '&' : '' ) . strtok( $clean_data, '=' ) . '=' ;
+					
+					$rest = strtok( "=" );
+					$rest = str_replace( ',', 'xxx123comma321xxx', $rest ); // Preserve commas
+					$rest = sanitize_title( $rest ); // eg add &writer=Kate-Phizackerley
+					$rest = str_replace( 'xxx123comma321xxx', ',', $rest ); // Preserve commas
+					
+					$custom_query .= $rest;
 
 				elseif($clean_item == 'category'): // For All categories we need to restrict search to the specified in the dashbaord
 					$custom_query .= ( ($custom_query) ? '&' : '' ) . 
