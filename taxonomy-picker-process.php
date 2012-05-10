@@ -27,7 +27,7 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 			$clean_item = taxonomy_picker_decode($item);
 			
 			if($clean_item <> 'set_categories' and $clean_item <> 's' and $clean_item <> 'kate-phizackerley'): // We have a result from a combo box						
-				if(strpos($data,'=tp-all') === false):  // Specific taxonomy picked
+				if(strpos($clean_data,'=tp-all') === false):  // Specific taxonomy picked
 
 					$custom_query .= ( ($custom_query) ? '&' : '' ) . strtok( $clean_data, '=' ) . '=' ;
 					

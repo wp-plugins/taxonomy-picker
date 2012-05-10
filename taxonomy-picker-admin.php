@@ -1,7 +1,7 @@
 <?php
 
 // PHP for the Taxonomy Picker Admin menu
-// Version: 1.13.1
+// Version: 1.13.2
 
 add_action( 'admin_menu', 'silverghyll_tpicker_menu_initialisation', 20); // silverghyll Menu added as 10
 add_action( 'admin_init', 'taxonomy_picker_admin_init', 20 ); 
@@ -78,9 +78,8 @@ function taxonomy_picker_admin_init() {
 	$fn_txt = "silverghyll_admin_combobox('taxonomy-picker-options','punctuation',array(' ',':','?','-'));";
 	add_settings_field( "punctuation", 'List punctuation?', create_function('',$fn_txt), "tpicker-housekeeping-sec", "tpicker-housekeeping");
 	
-	$widget_level = ($tpicker_options['premium-widget']) ? 'premium' : 'beta';
-	add_settings_field( "beta-widget", "Use $widget_level widget (see notes)", 
-				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options',$widget_level . '-widget');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
+	add_settings_field( "premium-widget", "Use beta/premium widget (see notes)", 
+					create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','premium-widget');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
 
 	add_settings_field( "colophon", 'Enable colophon shortcode?', 
 				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','colophon');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");

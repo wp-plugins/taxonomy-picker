@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.13.1
+// Version: 1.13.2
 // Builds the Standard Taxonomy Picker widget 
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -153,7 +153,6 @@ class FindHelperWidget extends WP_Widget {
 						$order_select  = "<select name='$select_name' style='width:90%;font-size:90%;'>";
 											
 						$orders =array('name','slug','id','count','tree');  
-						if( $options['beta-widget'] ) $orders[]='pruned_tree';
 						foreach( $orders as $order):
 							$selected = ($instance['orderby_'.$tax] == $order) ? 'selected="selected"' : '';
 							$select_label = ($order=='name') ? 'Label' : ucwords( str_replace('_',' ',$order) );

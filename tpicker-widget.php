@@ -95,7 +95,7 @@ class FindHelperWidget extends WP_Widget {
 		//Show search?
 	 	$searchid = $this->get_field_id( 'hidesearch' );
 	   $search_name = $this->get_field_name( 'hidesearch' );
-		$radio_checked = ($instance['hidesearch']=='on') ? 'checked ' : '';
+		$radio_checked = ( array_key_exists( 'hidesearch', $instance ) and $instance['hidesearch'] ) ? 'checked ' : '';
 	    
 	   echo '<p class="tpicker-title"><fieldset id="taxonomy-picker-title">';
 			echo "<td><label for='$titleid' title='title'>Title:</label>
@@ -226,8 +226,7 @@ class FindHelperWidget extends WP_Widget {
 					$select_name = $this->get_field_name("orderby_".$tax);
 					$order_select  = "<select name='$select_name' style='width:90%;font-size:90%;'>";
 										
-					if( $tax==post_type or $tax=='post_format' ) $orders = 'name'; else $orders =array('name','slug','id','count','tree');  
-					if( $options['beta-widget'] ) $orders[]='pruned_tree';
+					if( $tax==post_type or $tax=='post_format' ) $orders = 'name'; else $orders =array('name','slug','id','count','tree');  // Add 'pruned-tree' when ready
 					
 					foreach( (array) $orders as $order):
 						$selected = ($instance["orderby_{$tax}"] == $order) ? 'selected="selected"' : '';

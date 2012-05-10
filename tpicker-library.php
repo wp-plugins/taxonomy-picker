@@ -273,7 +273,8 @@ class taxonomy_picker_widget {
       if( empty($instance['taxonomies']) )  { $instance = taxonomy_picker_taxonomies_array( $instance ); } // Pre-process the instance for efficiency
       
       $this->combo = $instance['combo']; // Saved our combobox type
-   
+   	$set_categories = '';  //We may set a value      
+      
       if( !empty( $instance['taxonomies'] ) and is_array( $instance['taxonomies'] ) ): // Protect from nothing chosen
    
          foreach($instance['taxonomies'] as $taxonomy_name => $data_item):  // Loop through chosen list of taxonomies 
@@ -314,8 +315,7 @@ class taxonomy_picker_widget {
       $this->before_widget = apply_filters('tpicker_before' , ( ($before_widget) ? $before_widget : $this->before_widget ) );
       $this->after_widget = apply_filters('tpicker_after' , ( ($after_widget) ? $after_widget : $this->after_widget ) );
       
-      $this->hidesearch = $instance['hidesearch']; // Defaults to show (false)
-      
+      $this->hidesearch = ( array_key_exists( 'hidesearch' , $instance) ) ? true : false;  // Defaults to show (false)
    
       $this->choose_categories = $instance['choose_categories'];
       $cats = explode(',',$this->set_categories);
@@ -345,8 +345,6 @@ class taxonomy_picker_widget {
                $this->categories[$cat] = get_term( $cat, 'category' );  // Add individual categories to the array
             endif;
          endforeach;
-      else: // all - no display testing needed but we need to set $set_categories;
-         $set_categories = '';      
       endif;
 
       // Set default term arguments for get_terms
@@ -385,7 +383,7 @@ class taxonomy_picker_widget {
       
       // $post_handler = $_SERVER['REQUEST_URI'];    
       $post_handler = get_home_url();
-		$this->HTML .= "<form method='post' action='$post_handler' class='taxonomy-picker t-picker' id='tpicker-$id'><ul class='taxonomy-list'>"; 
+		$this->HTML .= "<form method='post' action='$post_handler' class='taxonomy-picker t-picker tpicker-{$this->id}'><ul class='taxonomy-list'>"; 
       
       $search_text = ( isset( $this->options['search-text']) and !empty( $this->options['search-text'] ) ) ? $this->options['search-text'] : __('Search');
       
@@ -456,6 +454,8 @@ class taxonomy_picker_widget {
    }
    
    private function build_taxonomy($tax_label, $data_item, $css_class) {
+   
+   	$result = '' ; // This will be our output
 
        // Set up any request for the sorting of the terms
    	$term_args = $this->term_args; // Read down defaults
@@ -495,10 +495,10 @@ class taxonomy_picker_widget {
          
          $term_slug = ( is_object( $term ) ) ? $term->slug : $term;
 
-         if( empty($this->inputs) ): 
+         if( empty($this->inputs) or ( !array_key_exists( $taxonomy_name, $this->inputs) ) ): 
             $current->selected = ($data_item['value'] == ($taxonomy_name . '=' . $term_slug) ) ? 'selected' : '';
          else:
-            $current->selected = ($this->inputs[$taxonomy_name] == $term_slug) ? 'selected' : '';
+            $current->selected = ( $this->inputs[$taxonomy_name] == $term_slug ) ? 'selected' : '';
          endif;
 
          if( substr( $data_item['orderby'] ,-4) == 'tree'): // For trees we need more
@@ -551,7 +551,7 @@ class taxonomy_picker_widget {
          foreach( $terms as $term ): 
             if( is_object( $term ) ):
                $term_slug = $term->slug;
-               $term_id = $term->id;
+               $term_id = @$term->id;
             else: 
                $term_slug = $term_id = $term;
             endif;
@@ -620,7 +620,7 @@ class taxonomy_picker_widget {
       if( is_object( $term ) ):
 	      $css_class = ( empty($term->parent) )  ? 'parent' : 'child'; // Top level are parents, rest are child
 	      $t_name = $term->name . ( ( $this->options['show-count'] ) ? " ({$term->count})" : "" );
-	      $term_slg = $term->slug;
+	      $term_slug = $term->slug;
 		else:
 			$css_class = '';
 			$term_slug = $t_name = $term;
@@ -640,10 +640,12 @@ class taxonomy_picker_widget {
             if( $parent->is_father ) $css_class .= ' sibling';
          endif;
          $css_class .= ' level'.sprintf($current->level, '%d'); // Add a class for the level
-   
+   		$current_selected = $current->selected;
+   	else:
+   		$current_selected = '';
       endif;
       
-      $result = "<option value='$option_name' $current->selected class='$css_class'>$t_name</option>";                                          
+      $result = "<option value='$option_name' $current_selected class='$css_class'>$t_name</option>";                                          
       return $result;
    } 
 

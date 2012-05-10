@@ -7,7 +7,7 @@
  *
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.13.1
+ * Version: 1.13.2
  *
  *******************************************************************
  *
@@ -100,9 +100,11 @@ if( !is_admin() ): //only on the front of the blog
 
 	// Add optional colohon support
 	if( (!empty($tpicker_options)) and (array_key_exists('colophon', $tpicker_options)) ):
-			require_once( silverghyll_include_best_library('silverghyll-shortcodes.php') ); // Silverghyll shortcodes needed to add [colophon]
+			incluude_once( silverghyll_include_best_library('silverghyll-shortcodes.php') ); // Silverghyll shortcodes needed to add [colophon]
 	endif;
 	
+	// Add shortcodes
+	include_once( TPICKER_DIR . 'taxonomy-picker-shortcode.php' );
 	
 	/*	Defer shortcode implementation to v1.6	
 		require_once(TPICKER_DIR.'/taxonomy-picker-shortcode.php');  // Add shortcode equivalent
