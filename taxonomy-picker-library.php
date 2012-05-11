@@ -192,6 +192,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 	// Get the configuration options from the database
 	$tpicker_options = get_option('taxonomy-picker-options');
 	$labels_after = isset( $tpicker_options['labels_after'] );
+	$show_count = array_key_exists( 'show-count' , $tpicker_options ) ? 'on' : '';
 
 	// Upgrade defence for v1.8 - won't be needed long term.  If taxonomies haven't been set, process the instance
 	iF( empty($instance['taxonomies']) )  { $instance = taxonomy_picker_taxonomies_array( $instance ); } // Pre-process the instance for efficiency
@@ -334,9 +335,9 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 				endif;
 				
 				
-				if( array_key_exists( 'show_count' , $tpicker_options ) and $allowed ): 
+				if( $show_count and $allowed ): 
 					$result .= taxonomy_picker_widget_select_option( $option_name, "$t_name ({$term->count})", $selected, $term->parent );
-				elseif($allowed):
+				elseif( $allowed ):
 					$result .= taxonomy_picker_widget_select_option( $option_name, $t_name, $selected, $term->parent  );
 				endif;
 			endforeach;

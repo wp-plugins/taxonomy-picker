@@ -2,7 +2,7 @@
 
 /* Class-based library
  * Functons shared by the shortcode and widget
- * Version: 1.13.0
+ * Version: 1.13.3
  */
 
 
@@ -434,7 +434,7 @@ class taxonomy_picker_widget {
       $this->HTML .= apply_filters( 'tpicker_form_after_fields', "", $this->id ); // Filter taxonomy order
       
       // Add standard hidden fields and close up
-      $this->HTML .= "<input type='hidden' name='set_categories' value='$set_categories' />";
+      $this->HTML .= "<input type='hidden' name='set_categories' value='$this->set_categories' />";
       $this->HTML .= "<input type='hidden' name='kate-phizackerley' value='taxonomy-picker' />";
       $this->HTML .= '<li style="height:8px;" class="last"></li></ul><p style="text-align:center;margin:0 auto;">';
       
@@ -551,7 +551,7 @@ class taxonomy_picker_widget {
          foreach( $terms as $term ): 
             if( is_object( $term ) ):
                $term_slug = $term->slug;
-               $term_id = @$term->id;
+               $term_id = ( @isset( $term->id ) ) ? $term->id : $term_slug;
             else: 
                $term_slug = $term_id = $term;
             endif;
@@ -640,12 +640,9 @@ class taxonomy_picker_widget {
             if( $parent->is_father ) $css_class .= ' sibling';
          endif;
          $css_class .= ' level'.sprintf($current->level, '%d'); // Add a class for the level
-   		$current_selected = $current->selected;
-   	else:
-   		$current_selected = '';
       endif;
       
-      $result = "<option value='$option_name' $current_selected class='$css_class'>$t_name</option>";                                          
+      $result = "<option value='$option_name' $current->selected class='$css_class'>$t_name</option>";                                          
       return $result;
    } 
 

@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.12.0
+// Version: 1.13.3
 // Builds the Premium TPicker widget
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -123,21 +123,21 @@ class FindHelperWidget extends WP_Widget {
 */
 		
 		// Code for sort results options
-		$selected = ( $instance['results_orderby'] == '_default' ) ? 'selected=selected' : '' ;
+		$selected = ( array_key_exists( 'results_orderby', $instance ) and ($instance['results_orderby'] == '_default' ) ) ? 'selected=selected' : '' ;
 		echo "<td>Sort results by:</td><td><select name='" . $this->get_field_name('results_orderby') . "'>
 					<option value='_default' $selected>** Default **</option>";
 		$user_choice = false;
 		foreach( array('author', 'comment_count', 'date','ID', 'modified', 'title') as $item):
 			if( $options["results_sort_$item"] ):
 				$item_text = str_replace( '_', ' ', ucfirst( $item) );
-				$selected = ( $instance['results_orderby'] == $item ) ? 'selected=selected' : '' ;
+				$selected = ( array_key_exists( 'results_orderby', $instance ) and ( $instance['results_orderby'] == $item ) ) ? 'selected=selected' : '' ;
 				echo "<option value='$item' $selected>$item_text</option>";
 				$user_choice = true; // We have at least one option to allow a user choice
 			endif;
 		endforeach;
 	
 		if( $user_choice ): // There are enough options for user_choice to be sensible
-			$selected = ( $instance['results_orderby'] == '_choice' ) ? 'selected=selected' : '' ;
+			$selected = ( array_key_exists( 'results_orderby', $instance ) and ( $instance['results_orderby'] == '_choice' ) ) ? 'selected=selected' : '' ;
 			echo "<option value='_choice' $selected>** Visitors' Choice **</option>";
 		endif;
 			 
@@ -146,7 +146,7 @@ class FindHelperWidget extends WP_Widget {
 
 		echo "<tr><td>Combobox type:</td><td><select name='" . $this->get_field_name('combo') . "'>";
 		foreach( array('flat','multi', 'radio') as $combo ):
-			$selected = ( $instance['combo'] == $combo ) ? 'selected=selected' : '' ;
+			$selected = ( array_key_exists( 'combo', $instance ) and ( $instance['combo'] == $combo ) ) ? 'selected=selected' : '' ;
 			echo "<option value='$combo' $selected>" .  ucwords($combo) . "</option>";
 		endforeach;
 		?></select></td><?php
@@ -194,7 +194,7 @@ class FindHelperWidget extends WP_Widget {
 					
 				$taxid = $this->get_field_id($tax_stem);
 				$tax_name = $this->get_field_name($tax_stem);
-				$radio_checked = ($instance[$tax_stem]=='on') ? 'checked ' : '';
+				$radio_checked = ( array_key_exists( $tax_stem, $instance ) and ( $instance[$tax_stem]=='on') ) ? 'checked ' : '';
 				
 				if($tax <> 'category'): // Custom taxonomy or post_type or post_format - build fix/initial value combobox
 				
@@ -216,7 +216,7 @@ class FindHelperWidget extends WP_Widget {
 						$tax_select .= "<option value='{$taxonomy_name}=tp-all'>".taxonomy_picker_all_text($tax_label)."</option>";
 						foreach( (array) $terms as $term ): // Loop through the terms to build the options
 							$option_name = $taxonomy_name . '=' . ( (is_string( $term ) ? $term : $term->slug ) );
-							$selected = ($instance['fix_'.$tax] == $option_name) ? 'selected="selected"' : '';
+							$selected = (array_key_exists( 'fix_'.$tax, $instance ) and ($instance['fix_'.$tax] == $option_name) ) ? 'selected="selected"' : '';
 							$tax_select .= "<option value='$option_name' $selected>" . ( (is_string( $term ) ? $term : $term->name ) ) . '</option>';
 						endforeach;
 						$tax_select .= "</select>";
@@ -226,10 +226,10 @@ class FindHelperWidget extends WP_Widget {
 					$select_name = $this->get_field_name("orderby_".$tax);
 					$order_select  = "<select name='$select_name' style='width:90%;font-size:90%;'>";
 										
-					if( $tax==post_type or $tax=='post_format' ) $orders = 'name'; else $orders =array('name','slug','id','count','tree');  // Add 'pruned-tree' when ready
+					if( $tax=='post_type' or $tax=='post_format' ) $orders = 'name'; else $orders =array('name','slug','id','count','tree');  // Add 'pruned-tree' when ready
 					
 					foreach( (array) $orders as $order):
-						$selected = ($instance["orderby_{$tax}"] == $order) ? 'selected="selected"' : '';
+						$selected = ( array_key_exists( "orderby_{$tax}", $instance ) and ( $instance["orderby_{$tax}"] == $order ) ) ? 'selected="selected"' : '';
 						$select_label = ($order=='name') ? 'Label' : ucwords( str_replace('_',' ',$order) );
 						$order_select .= "<option value='$order' $selected>$select_label</option>";
 					endforeach;
@@ -239,14 +239,14 @@ class FindHelperWidget extends WP_Widget {
 					$select_name = $this->get_field_name("sort_".$tax);
 					$sort_select  = "<select name='$select_name' style='width:90%;font-size:90%;'>";
 					foreach( array('Asc','Desc') as $term):
-						$selected = ($instance['sort_'.$tax] == $term) ? 'selected="selected"' : '';
+						$selected = ( array_key_exists( 'sort_'.$tax, $instance ) and ($instance['sort_'.$tax] == $term ) )? 'selected="selected"' : '';
 						$sort_select .= "<option value='$term' $selected>$term</option>";
 					endforeach;
 
 					// Priority inputs
-					if( isset($options['sort-priority'] ) ): // Only show priority field if required
+					if( @isset($options['sort-priority'] ) ): // Only show priority field if required
 						$select_name = $this->get_field_name("priority_".$tax);
-						$priority_input  = "<td><input name='$select_name' style='width:60px;font-size:90%;'></td>";
+						$priority_input  = "<input name='$select_name' style='width:60px;font-size:90%;'>";
 					else:
 						$priority_input = '';
 					endif;						
@@ -254,7 +254,13 @@ class FindHelperWidget extends WP_Widget {
 				
 				echo "<tr><td><input id='$taxid' class='checkbox' type='checkbox' name='$tax_name' $radio_checked />";
 				echo "&nbsp;<label for='$taxid' title='$tax_stem'>$tax_label</span></label></td>";
-				echo "<td>$tax_select</td><td>$order_select</td><td>$sort_select</td>$priority_input</tr>";
+				
+				// Output any cells we have build
+				foreach( array( 'tax_select', 'order_select', 'sort_select', 'priority_input' ) as $i ):
+					 if( isset( $$i ) ) echo '<td>' . $$i . '</td>'; else echo '<td>&nbsp;</td>';
+				endforeach;
+				
+				echo "</tr>";
 			endforeach;
 			echo '</tbody></table><i style="font-size:75%">If on, the value is the initial one; if off, value is fixed to restrict search</i></div></fieldset><hr>';
 		endif;
@@ -262,7 +268,7 @@ class FindHelperWidget extends WP_Widget {
 		// Select Categories		
 		$titleid = $this->get_field_id( 'category_title' );
 	   $title_name = $this->get_field_name('category_title');
-	   $title_value = $instance['category_title'];
+	   $title_value = ( array_key_exists( 'category_title', $instance ) ) ? $instance['category_title'] : '';
 
 		echo '<fieldset id="taxonomy-picker-categories"<p><h3>Categories</h3></p>';
 		echo '<p style="float:left;"><label for="$cat_titleid"><b>Title:</b></label></p>';
@@ -283,7 +289,7 @@ class FindHelperWidget extends WP_Widget {
 		echo "Excl:&nbsp;<input type='radio' name='$radio_name' value='E' $radio_checked /><br/>"; 
 		$inputid = $this->get_field_id('set_categories');
 		$input_name = $this->get_field_name('set_categories');
-		$input_value = $instance['set_categories'];
+		$input_value = ( array_key_exists( 'set_categories', $instance ) ) ? $instance['set_categories'] : '';
 		echo "<input id='$inputid' name='$input_name'  value='$input_value' style='width:100%;margin-top:2px;'/>";
 		echo '<i style="font-size:75%">Enter category IDs separated by commas</i>';
 		echo '</fieldset><hr>';
@@ -302,7 +308,7 @@ class FindHelperWidget extends WP_Widget {
 
 		$inputid = $this->get_field_id('set_pages');
 		$input_name = $this->get_field_name('set_pages');
-		$input_value = $instance['set_pages'];
+		$input_value = ( array_key_exists( 'set_pages', $instance ) ) ? $instance['set_pages'] : '';
 		echo "<input id='$inputid' name='$input_name' value='$input_value' style='width:100%;margin-top:2px;'/>";
 		echo '<i style="font-size:75%">Enter page IDs separated by commas</i>';
 	echo '</fieldset>';
