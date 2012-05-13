@@ -36,9 +36,12 @@
 ************************************/
 if( !defined('TPICKER_DIR') ) define('TPICKER_DIR', trailingslashit(dirname(__FILE__)) );
 if( !function_exists('silverghyll_debug_status') ) require_once (TPICKER_DIR.'silverghyll-library/silverghyll-foundation.php');  // Add silverghyll debug & versioning support
-if( !is_admin() ) add_action( 'init', 'taxonomy_picker_enqueue' );  // Enqueue the stylesheet and any scripts or internationalization
+if( !is_admin() ): 
+	add_action( 'init', 'taxonomy_picker_init' ); // Register scripts and stylesheet and init plugin
+	add_action( 'wp_enqueue_scripts', 'taxonomy_picker_enqueue');  // Enqueue the stylesheet and any scripts or internationalization
+endif;
 
-function taxonomy_picker_enqueue() { // Also do any other init actions
+function taxonomy_picker_init() { // Register scripts and styles plus any other init actions
 
 	$tpicker_options = get_option('taxonomy-picker-options');
 		
@@ -52,7 +55,19 @@ function taxonomy_picker_enqueue() { // Also do any other init actions
 		$last_modified = date( 'ymdHi', filemtime( TPICKER_DIR . "taxonomy-picker.css" ) );
 	    wp_register_style("tpicker", trailingslashit( plugins_url('',__FILE__) ) . "taxonomy-picker.css", array(), $last_modified );
 	endif;
-    wp_enqueue_style( "tpicker");
+
+//	$last_modified = date( 'ymdHi', filemtime( TPICKER_DIR . "/js/jsDatePick.jquery.min.js" ) );
+//	wp_register_script('jsDatePickJS', trailingslashit( plugins_url('',__FILE__) )  . '/js/jsDatePick.jquery.min.js', array('jquery'), $last_modified );
+
+	return;
+}
+
+function taxonomy_picker_enqueue() { // Also do any other init actions
+
+    wp_enqueue_style( 'tpicker' ); // Stylesheet
+    
+//    wp_enqueue_script( 'jsDatePickJS' ); // Date picker
+//    wp_localize_script( 'some_handle', 'object_name', $translation_array );
     
     return;
 }
@@ -89,25 +104,6 @@ if( !is_admin() ): //only on the front of the blog
 
 	require_once( TPICKER_DIR . 'taxonomy-picker-process.php' );  // Process any previous use of the widget
 	add_action('init', 'taxonomy_picker_process', 1);  // Hook in our form handler
-
-/*	Needs re-coding to store in a cookie
-	if( array_key_exists('redirect', $tpicker_options) ): // Add echo of the redirection which was suppressed
-		add_filter( 'the_content', 'tpicker_redirect_growl', 99 );  
-		add_filter( 'the_excerpt', 'tpicker_redirect_growl', 99 );  
-		
-		// Filter for the_content to add debugging info on the redirection
-		function tpicker_redirect_growl( $content ) {
-			static $growled = false;
-			if( !$growled ):
-				$content .= '<div class="tpicker-redirect-growl" style="padding: 1em 2em; border 5px red groove;"><h2>Taxonomy Picker Redirect</h2><p>Redirect built: <strong>';
-				$content .= defined( 'TPICKER_REDIRECT' ) ? TPICKER_REDIRECT : 'N/A'; // Just in case ...
-				$content .= '</strong></p></div>';
-				$growled = true; // Growl only once
-			endif;
-			return $content;
-		} 
-	endif;
-*/
 
 	// Add optional colohon support
 	if( (!empty($tpicker_options)) and (array_key_exists('colophon', $tpicker_options)) ):

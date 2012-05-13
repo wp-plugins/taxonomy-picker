@@ -4,6 +4,7 @@
 .tpicker-title label {text-align:right;mergin:0 0.6em 0 2em;}
 
 .taxonomy-picker select {clear:left; width: 100%;}
+.taxonomy-picker select.tpicker-date {min-width:6em;}
 .tpicker-search-text {width:90%;}
 
 .taxonomy-picker .tree .level2 {padding-left:8%;}

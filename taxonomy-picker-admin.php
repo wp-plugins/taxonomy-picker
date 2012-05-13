@@ -1,7 +1,7 @@
 <?php
 
 // PHP for the Taxonomy Picker Admin menu
-// Version: 1.13.2
+// Version: 1.13.4
 
 add_action( 'admin_menu', 'silverghyll_tpicker_menu_initialisation', 20); // silverghyll Menu added as 10
 add_action( 'admin_init', 'taxonomy_picker_admin_init', 20 ); 
@@ -41,8 +41,17 @@ function taxonomy_picker_admin_init() {
 	
 	add_settings_section( "tpicker-processing", 'Query Processing', 'tpicker_nothing', "tpicker-processing-sec");
 				
-	$fn_txt = "silverghyll_admin_combobox('taxonomy-picker-options','all-format',array('** All **','All Items','Everything','Every {name}','All {name}', 'All {name}s', 'N/A'));";
-	str_replace( (string)$fn_txt, array('All','Items','Every','Everything'), array(__('All','tpicker'),__('Items','tpicker'),__('Every','tpicker'),__('Everything','tpicker')) );			
+	$fn_txt = "silverghyll_admin_combobox('taxonomy-picker-options',
+			'all-format',array('** All **','All Items','Blank','Everything','Every {name}','All {name}', 'All {name}s', 'N/A'));";
+
+/*	$fn_txt = str_replace( $fn_txt, 'All', __('All','tpicker') );	
+	$fn_txt = str_replace( $fn_txt, 'Items', __('Items','tpicker') );	
+	$fn_txt = str_replace( $fn_txt, 'Everything', __('Everything','tpicker') );	
+	$fn_txt = str_replace( $fn_txt, 'Every', __('Every','tpicker') );	*/
+
+
+	$fn_txt = str_replace( array('All','Blank','Items','Every','Everything'),
+				array( __('All','tpicker'), __('Blank','tpicker'), __('Items','tpicker'),__('Every','tpicker'),__('Everything','tpicker') ), $fn_txt );			
 	
 	add_settings_field( "all-format", 'Text for \'all\' option', create_function('',$fn_txt),	"tpicker-processing-sec","tpicker-processing");
 
@@ -84,8 +93,8 @@ function taxonomy_picker_admin_init() {
 	add_settings_field( "colophon", 'Enable colophon shortcode?', 
 				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','colophon');"), "tpicker-housekeeping-sec", "tpicker-housekeeping");
 				
-/*	add_settings_field( "redirect", 'Enable redirect debug mode?', 
-				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','redirect');"), "tpicker-housekeeping-sec", "tpicker-housekeeping"); */
+	add_settings_field( "redirect", 'Enable redirect debug mode?', 
+				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','redirect');"), "tpicker-housekeeping-sec", "tpicker-housekeeping"); 
 
 	/* Results Options */
 	if( $tpicker_options['premium-widget'] ):

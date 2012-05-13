@@ -101,22 +101,27 @@ function taxonomy_picker_dencode( $input, $direction = 'decode') {
  */
 
 function taxonomy_picker_all_text( $tax_name ) {
-	$tax_name = rstrip_punctuation( $tax_name );
-	$options = get_option('taxonomy-picker-options');
-	$all_text = trim($options['all-format']); // Just in case!
-	$override = trim($options['all-override']); // Just in case!
-	
-	if( $override )	$all_text = $override; // Override option for international users
-	if( substr($all_text ,-6) == '{name}' ):
-		$all_text = str_replace( '{name}', ucfirst($tax_name), $all_text );
-	elseif( substr($all_text ,-7) == '{name}s' ):
-		$all_text = trim( str_replace( '{name}', ucfirst($tax_name), $all_text ) );
-		if( substr($all_text,-2) == 'ys' ):
-			 $all_text = substr_replace( $all_text, 'ies', -2 ); // ys => ies for neat plurals
-		endif;				
-	endif;
-	
-	return $all_text;
+   $tax_name = rstrip_punctuation( $tax_name );
+   $options = get_option('taxonomy-picker-options');
+   $all_text = trim( $options['all-format'] ); // Just in case!
+   $override = trim( $options['all-override'] ); // Just in case!
+   
+   if( !empty( $override ) )   $all_text = $override; // Override option for international users
+   
+   if( $all_text == __( 'Blank', 'tpicker' ) ):
+   	$all_text = '&emsp;';
+   elseif( substr($all_text ,-6) == '{name}' ):
+      $all_text = str_replace( '{name}', ucfirst($tax_name), $all_text );
+   elseif( substr($all_text ,-7) == '{name}s' ):
+      $all_text = trim( str_replace( '{name}', ucfirst($tax_name), $all_text ) );
+      if( substr($all_text,-2) == 'ys' ):
+      	$all_text = substr_replace( $all_text, 'ies', -2 ); // ys => ies for neat plurals
+      elseif( substr($all_text,-2) == 'ss' ):
+      	$all_text = substr( $all_text, 0, strlen( $all_text ) - 1 ); // Drop the last s
+      endif;            
+   endif;
+   
+   return $all_text;
 }
 
 /*	Ensure last letter is alphanumberic

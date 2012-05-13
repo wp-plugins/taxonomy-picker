@@ -74,13 +74,12 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 		$blog_url = apply_filters('tpicker_redirect', $blog_url);
 	
 		if( array_key_exists( 'redirect', $tpicker_options ) ): // Enter debug mode to show the redirection
-		
-			define( 'TPICKER_REDIRECT', $blog_url ); // Save the redirection
-			
-		else: // Let the action commence ...
-			wp_redirect($blog_url, 302 );  // Redirect to the built URI
-			die();
-		endif;
+			echo "<h3>Built URL: $blog_url</h3>";
+			sleep(3); // Actually usually stops entireley
+		endif;	
+					
+		wp_redirect($blog_url, 302 );  // Redirect to the built URI
+		die();
 		
 	endif;
 return;

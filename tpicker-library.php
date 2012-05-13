@@ -2,7 +2,7 @@
 
 /* Class-based library
  * Functons shared by the shortcode and widget
- * Version: 1.13.3
+ * Version: 1.13.4
  */
 
 
@@ -97,7 +97,7 @@ function taxonomy_picker_dencode( $input, $direction = 'decode') {
    return str_replace( $enq_bits, $plain_bits,  html_entity_decode( $input ) );
 }
 
-/* Get the text to use for the 'All' option for a taxonomy
+/* Get the text to use for the 'All' option for a taxonomy.
  *
  *    @param   $tax_name   String      Name of taxonomy
  *
@@ -107,16 +107,21 @@ function taxonomy_picker_dencode( $input, $direction = 'decode') {
 function taxonomy_picker_all_text( $tax_name ) {
    $tax_name = rstrip_punctuation( $tax_name );
    $options = get_option('taxonomy-picker-options');
-   $all_text = trim($options['all-format']); // Just in case!
-   $override = trim($options['all-override']); // Just in case!
+   $all_text = trim( $options['all-format'] ); // Just in case!
+   $override = trim( $options['all-override'] ); // Just in case!
    
-   if( $override )   $all_text = $override; // Override option for international users
-   if( substr($all_text ,-6) == '{name}' ):
+   if( !empty( $override ) )   $all_text = $override; // Override option for international users
+   
+   if( $all_text == __( 'Blank', 'tpicker' ) ):
+   	$all_text = '&emsp;';
+   elseif( substr($all_text ,-6) == '{name}' ):
       $all_text = str_replace( '{name}', ucfirst($tax_name), $all_text );
    elseif( substr($all_text ,-7) == '{name}s' ):
       $all_text = trim( str_replace( '{name}', ucfirst($tax_name), $all_text ) );
       if( substr($all_text,-2) == 'ys' ):
-          $all_text = substr_replace( $all_text, 'ies', -2 ); // ys => ies for neat plurals
+      	$all_text = substr_replace( $all_text, 'ies', -2 ); // ys => ies for neat plurals
+      elseif( substr($all_text,-2) == 'ss' ):
+      	$all_text = substr( $all_text, 0, strlen( $all_text ) - 1 ); // Drop the last s
       endif;            
    endif;
    
@@ -244,6 +249,7 @@ class taxonomy_picker_widget {
    private $title = '';
    private $id=''; // A (hopefully) unique id for the widget
    private $hidesearch = false; 
+   private $date_match = '';
    private $tax_type; // Temporary storage of the tree type for the taxonomy while processing
    private $term_args; // Default term arguments for get_terms
    
@@ -316,6 +322,7 @@ class taxonomy_picker_widget {
       $this->after_widget = apply_filters('tpicker_after' , ( ($after_widget) ? $after_widget : $this->after_widget ) );
       
       $this->hidesearch = ( array_key_exists( 'hidesearch' , $instance) ) ? true : false;  // Defaults to show (false)
+      $this->date_match =  $instance[ 'date_match' ] ;  // Must be present so just read in    
    
       $this->choose_categories = $instance['choose_categories'];
       $cats = explode(',',$this->set_categories);
@@ -402,7 +409,65 @@ class taxonomy_picker_widget {
       else:
          $css_class='first home ';
       endif;
-      
+     
+      $labels_after = array_key_exists( 'labels_after', $this->options );
+     
+     	if( !empty( $this->date_match ) ): // We need dates?
+     		$string_length = strlen($str);
+     		$periods = array( 'Y' => 'Year', 'M' => 'Month', 'D' => 'Day' );
+     		$this->HTML .= "<li class='periods $css_class'><table><tbody><tr>";
+     		$css_class = '';
+				
+				
+			/* Post date sectiom */	
+			foreach( $periods as $p_char => $period ):
+
+				if( strpos( $this->date_match, $p_char ) !== false ):  
+
+					$this_label = '<label>' . __( $period, 'tpicker' ) . $this->options['punctuation'] . '</label>'; 
+					$lower_period = strtolower( $period);
+					if( $lower_period == 'month' ) $lower_period = 'monthnum';
+
+					// Build array of values for years, months or dates
+					$period_values = array();					
+					if( $p_char == 'Y' ):
+						for( $yr = intval( date('Y') ); $yr >= 2003; $yr-- ) $period_values[] = strval( $yr );
+					elseif( $p_char == 'M' ):
+						for( $mth = 1; $mth <= 12; $mth++ ) $period_values[] = strval( $mth );
+					elseif( $p_char == 'D' ):
+						for( $dy = 1; $dy <= 31; $dy++ ) $period_values[] = strval( $dy );
+					endif;
+					
+					if( count( $period_values ) > 0 ): // We have some values to print!					
+						// Build postdate selects
+						$this->HTML .= '<td>';
+						if( !$labels_after ) $this->HTML .= $this_label;
+	
+						if( apply_filters( 'tpicker_multi_select', $this->combo, 'post_date' ) == 'multi' ): // Filter allows one to be turned on or off
+	         			$this->HTML .= "<select name='{$lower_period}[]' multiple class='tpicker-select tpicker-post-date tpicker-date tpicker-{$lower_period} multiple'>";
+	         		else:
+	         			$this->HTML .= "<select name='{$lower_period}' class='tpicker-select tpicker-post-date tpicker-date tpicker-{$lower_period} single'>";
+	         		endif;
+						
+							$this->HTML .= "<option value='$lower_period=tp-all'>". taxonomy_picker_all_text($period) ."</option>"; // ** ALL **
+						foreach( $period_values as $period_value ):
+							$this->HTML .= "<option value='$lower_period=$period_value'>$period_value</option>";
+						endforeach;
+						
+						$this->HTML .= '</select>';
+						
+						if( $labels_after ) $this->HTML .= $this_label;
+						$this->HTML .= '<td>';
+					endif; //cunt( $period_values ) > 0
+				endif; // strpos( $this->date_match, $p_char ) !== false 
+
+			endforeach;
+
+    		$this->HTML .= '</tr></tbody></table>';
+    		unset($string_length, $period, $lower_period, $p_char, $periods, $period_values, $period_value, $yr, $mth, $dy, $this_label);
+     	endif;
+     
+     	// Main body - add the taxonomies 
       foreach($this->taxonomies as $tax_label => $data_item):       
          $this->HTML .= $this->build_taxonomy($tax_label, $data_item, $css_class );  // loop taxomomies
       endforeach;
@@ -410,8 +475,7 @@ class taxonomy_picker_widget {
       // Add sort order options
       if($this->orderby <> '_default'):
          if($this->orderby == '_choice'):
-            $labels_after =isset( $this->options['labels_after'] );
-            $this_label = "<label style='float:left;'>Order By</label>"; // Punctuation needed
+            $this_label = "<label style='float:left;'>Order By" . $this->options['punctuation'] . "</label>"; 
             $this->HTML .= "<li>" . ( ($labels_after) ? "" : $this_label ) . "<br><select name='orderby'>"; 
             
             /* 
@@ -441,7 +505,7 @@ class taxonomy_picker_widget {
       if($this->options['remember']):
          // $this->HTML .= "<p onclick='document.getElementById(\"taxonomy-picker\").reset()';>Clear</p>";  // Sort out in v2.0
       else:
-         $this->HTML .=    '<input type="reset" value="' .  apply_filters('tpicker_reset', 'Reset' ) . '" style="margin-right:10%;" />';
+         $this->HTML .= '<input type="reset" value="' .  apply_filters('tpicker_reset', 'Reset' ) . '" style="margin-right:10%;" />';
 
       endif;
             
@@ -538,14 +602,14 @@ class taxonomy_picker_widget {
       case 'flat':
       case 'multi': // Normal combo box
 
-         if( apply_filters( 'tpicker_multi_select', $this->combo, $tax_label ) == 'multi' ): // Filter allows one to be turned on or off
-         	$result .= "<select name='{$taxonomy_name}[]' multiple>";
+         if( apply_filters( 'tpicker_multi_select', $this->combo, $taxonomy_name ) == 'multi' ): // Filter allows one to be turned on or off
+         	$result .= "<select name='{$taxonomy_name}[]' multiple class='tpicker-select tpicker-{$taxonomy_name} multiple'>";
          else:
-         	$result .= "<select name='{$taxonomy_name}'>";
+         	$result .= "<select name='{$taxonomy_name}' class='tpicker-select tpicker-{$taxonomy_name} single'>";
          endif;
          
          if( taxonomy_picker_all_text($tax_label) <> 'N/A' ):  
-            $result .= "<option value='$taxonomy_name=tp-all'>". taxonomy_picker_all_text($tax_label) ."</option>";// ** ALL **
+            $result .= "<option value='$taxonomy_name=tp-all'>". taxonomy_picker_all_text($tax_label) ."</option>"; // ** ALL **
          endif;
          
          foreach( $terms as $term ): 
@@ -565,7 +629,8 @@ class taxonomy_picker_widget {
       case 'radio': // Radio buttons
 
          if( taxonomy_picker_all_text($tax_label) <> 'N/A' ):  
-            $result .= "<p><input type='radio' name='$taxonomy_name' value='$taxonomy_name=tp-all' />". taxonomy_picker_all_text($tax_label) . "</p>";// ** ALL **
+            $result .= "<p><input type='radio' name='$taxonomy_name' value='$taxonomy_name=tp-all'  class='radio tpicker-radio tpicker-{$taxonomy_name}' />" . 
+            			taxonomy_picker_all_text($tax_label) . "</p>";// ** ALL **
          endif;
          foreach($terms as $term):     
             if( is_object( $term ) ):

@@ -1,6 +1,6 @@
 <?php
 
-// Version: 1.13.3
+// Version: 1.13.4
 // Builds the Premium TPicker widget
 
 add_action('widgets_init','register_phiz_find_helper');
@@ -112,15 +112,14 @@ class FindHelperWidget extends WP_Widget {
 		// Radio buttons alternative
 		?><p><fieldset id="tpicker_premium"><h3>Premium Options</h3><table><tbody><tr><td><?php
 
-/* *** Front side code needed ***
 		// Date Match option
-		echo "Match date:</td><td><select name='" . $this->get_field_name('date_match') . "'>";
+		echo "Post date:</td><td><select name='" . $this->get_field_name('date_match') . "'>";
 		foreach( array('N/A','Y','YM','YMD','M','D') as $item ):
 			$selected = ( $instance['date_match'] == $item ) ? 'selected=selected' : '' ;
 			echo "<option value='$item' $selected>{$item}</option>";
 		endforeach;
 		?></select></td><?php
-*/
+
 		
 		// Code for sort results options
 		$selected = ( array_key_exists( 'results_orderby', $instance ) and ($instance['results_orderby'] == '_default' ) ) ? 'selected=selected' : '' ;
@@ -149,7 +148,10 @@ class FindHelperWidget extends WP_Widget {
 			$selected = ( array_key_exists( 'combo', $instance ) and ( $instance['combo'] == $combo ) ) ? 'selected=selected' : '' ;
 			echo "<option value='$combo' $selected>" .  ucwords($combo) . "</option>";
 		endforeach;
+				
 		?></select></td><?php
+
+		echo "<p>(<b>NB - Release Notes</b> - Post Date is alpha trial functionality in this release)<p>";
 		
 		?></tr></tbody></table></fieldset></p><hr><?php
 
