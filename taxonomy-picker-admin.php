@@ -1,7 +1,7 @@
 <?php
 
 // PHP for the Taxonomy Picker Admin menu
-// Version: 1.13.4
+// Version: 1.13.5
 
 add_action( 'admin_menu', 'silverghyll_tpicker_menu_initialisation', 20); // silverghyll Menu added as 10
 add_action( 'admin_init', 'taxonomy_picker_admin_init', 20 ); 
@@ -97,7 +97,8 @@ function taxonomy_picker_admin_init() {
 				create_function('',"silverghyll_admin_checkbox('taxonomy-picker-options','redirect');"), "tpicker-housekeeping-sec", "tpicker-housekeeping"); 
 
 	/* Results Options */
-	if( $tpicker_options['premium-widget'] ):
+	if( array_key_exists( 'premium-widget', $tpicker_options ) ):
+	// if( $tpicker_options['premium-widget'] ): - old version
 
 
 		// Enable post formats and post types

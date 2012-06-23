@@ -7,7 +7,7 @@
  *
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.13.3
+ * Version: 1.13.5
  *
  ************************************************************
  *
@@ -107,7 +107,7 @@ if( !is_admin() ): //only on the front of the blog
 
 	// Add optional colohon support
 	if( (!empty($tpicker_options)) and (array_key_exists('colophon', $tpicker_options)) ):
-			incluude_once( silverghyll_include_best_library('silverghyll-shortcodes.php') ); // Silverghyll shortcodes needed to add [colophon]
+			include_once( silverghyll_include_best_library('silverghyll-shortcodes.php') ); // Silverghyll shortcodes needed to add [colophon]
 	endif;
 	
 	// Add shortcodes

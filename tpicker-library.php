@@ -2,7 +2,7 @@
 
 /* Class-based library
  * Functons shared by the shortcode and widget
- * Version: 1.13.4
+ * Version: 1.13.5
  */
 
 
@@ -32,7 +32,7 @@ function taxonomy_picker_tpicker_array() {
          $key = strtok($data, '=');
          $result[$key] = strtok('='); 
       endforeach;
-      return $result;
+      return apply_filters('tpicker_URI_vars', $result);
    else:
       return NULL;
    endif;
