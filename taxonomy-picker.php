@@ -7,7 +7,7 @@
  *
  * Author: Kate Phizackerley
  * Author URI: http://katephizackerley.wordpress.com
- * Version: 1.13.5
+ * Version: 1.13.6
  *
  ************************************************************
  *
