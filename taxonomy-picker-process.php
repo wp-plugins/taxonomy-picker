@@ -1,7 +1,7 @@
 <?php
 
 // Tidy up the POST output of the Taxonomy Widget form to pass to the blog homepage via URI to drive normal searching behaviour
-// Version: 1.13.6
+// Version: 1.13.7
 
 function taxonomy_picker_process() {  // Build a URI form the data POSTed by the widget form
 
@@ -59,11 +59,6 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 				$custom_query .= '&silverghyll_tpicker=' . taxonomy_picker_encode($custom_query);  // Save our query for defaulting widget
 					
 				$blog_url = get_bloginfo('url');
-				
-				if( defined( 'ICL_LANGUAGE_CODE' )): // In WPMP environment build language code into the built URL
-					$blog_url = trailingslashit( $blog_url ) .ICL_LANGUAGE_CODE ;  
-				endif;
-				
 				 
 				$blog_url = (($blog_url[-1] == '/') ? $blog_url : $blog_url . '/').'?'.$custom_query;  // Our composite URL for searching
 				
@@ -74,11 +69,7 @@ function taxonomy_picker_process() {  // Build a URI form the data POSTed by the
 			else:
 			
 				$blog_url = get_bloginfo('url');			
-				
-				if( defined( 'ICL_LANGUAGE_CODE' )): // In WPMP environment build language code into the built URL
-					$blog_url = trailingslashit( $blog_url ) .ICL_LANGUAGE_CODE ;  
-				endif;
-				
+
 			endif;
 		
 		$blog_url = apply_filters('tpicker_redirect', $blog_url);
