@@ -9,7 +9,7 @@ Author: Kate Phizackerley
 Requires at least: 3.1
 Tested up to: 3.4.2
 Stable tag: trunk
-Version: 1.13.7
+Version: 1.13.8
 
 Add a widget to help your readers build custom queries using drop downs of your categories and custom taxonomies.  The latest version comes with a fully optional set of pre-packed custom taxonomies for anybody who wants additional "cartegories" or sets of "tags" without coding - the names are customisable.
 
@@ -42,6 +42,8 @@ Download the and activate the plugin the usual way.  The new widget will then be
 
 
 == Upgrade Notice ==
+= 1.13.8 =
+Fix bug in basic version for empty query when categories included or excluded
 = 1.13.6 =
 Trial version for basic WPML support in build URL
 = 1.13.3 =
@@ -58,6 +60,7 @@ Restructure Silverghll library code in preparation for release of Colophon plugi
 See  http://www.squidoo.com/taxonomy-picker-wordpress-plugin
 
 == Changelog ==
+1.13.8 Fix bug in basic version
 1.13.3 Bug fixes
 1.13.0 Adds experimental multi-select option to beta widget
 1.10.9 Fixes bug with tags; adds tpicker_query_string() function

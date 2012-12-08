@@ -1,7 +1,7 @@
 <?php
 
 /* Functons shared by the shortcode and widget - Deprecated version
- * Version: 1.13.5
+ * Version: 1.13.8
  */
 
 /* Standardise function for accessing $_GET variables
@@ -359,7 +359,7 @@ function taxonomy_picker_display_widget( $instance, $args = null ) {
 	
 	$result .= apply_filters( 'tpicker_form_after_fields', ""); // Filter taxonomy order
 	
-	$result .= "<input type='hidden' name='set_categories' value='" . $instance['set_categories'] . "' />";
+	$result .= "<input type='hidden' name='set_categories' value='" . $set_categories . "' />";
 	$result .= "<input type='hidden' name='kate-phizackerley' value='taxonomy-picker' />";
 	$result .= '<li style="height:8px;" class="last"></li></ul><p style="text-align:center;margin:0 auto;">';
 	
